@@ -1,6 +1,7 @@
 package main
 
 import "fmt"
+import "math"
 
 func main() {
 	cs := []Cell{Cell{0, 0}, Cell{1, 1}}
@@ -9,8 +10,8 @@ func main() {
 
 type Board [][]bool
 type Cell struct {
-	row int
-	col int
+	y int
+	x int
 }
 type Unit struct {
 	members []Cell
@@ -34,7 +35,7 @@ func NewBoard(rows int, cols int, cells []Cell) Board {
 	}
 
 	for _, c := range cells {
-		b[c.row][c.col] = true
+		b[c.y][c.x] = true
 	}
 
 	return b
@@ -43,9 +44,9 @@ func NewBoard(rows int, cols int, cells []Cell) Board {
 func UnitRelativeToCell(unit Unit, cell Cell) Unit {
 	newUnit := Unit{members: make([]Cell, len(unit.members)), pivot: cell}
 	for i, member := range unit.members {
-		newRow := cell.row + (member.row - unit.pivot.row)
-		newCol := cell.col + (member.col - unit.pivot.col)
-		newUnit.members[i] = Cell{newRow, newCol}
+		newX := cell.x + (member.x - unit.pivot.x)
+		newY := cell.y + (member.y - unit.pivot.y)
+		newUnit.members[i] = Cell{newY, newX}
 	}
 	return newUnit
 }
@@ -63,5 +64,47 @@ func TargetLocation(board Board, unit Unit) Unit {
 }
 
 func MoveToTarget(board Board, unit Unit, target Unit) []Command {
+
+	// get start location
+
+	// move left / right
+
+	// move down
+
 	return []Command{E, SE}
+}
+
+// func StartLocation(b Board, u Unit) BoardUnit {
+// }
+
+func (u Unit) Width() int {
+	minX := math.MaxInt32
+	maxX := -1
+
+	for _, member := range u.members {
+		if minX > member.x {
+			minX = member.x
+		}
+		if maxX < member.x {
+			maxX = member.x
+		}
+	}
+
+	return 1 + maxX - minX
+}
+
+func (u Unit) Height() int {
+	minY := math.MaxInt32
+	maxY := -1
+
+	for _, member := range u.members {
+		if minY > member.y {
+			minY = member.y
+		}
+		if maxY < member.y {
+			maxY = member.y
+		}
+	}
+
+	return 1 + maxY - minY
 }
