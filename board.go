@@ -13,8 +13,8 @@ type Cell struct {
 	col int
 }
 type Unit struct {
-	cells []Cell
-	pivot Cell
+	members []Cell
+	pivot   Cell
 }
 type BoardUnit Unit
 type Command int
