@@ -42,13 +42,13 @@ func NewBoard(rows int, cols int, cells []Cell) Board {
 }
 
 func (u Unit) MoveTo(cell Cell) Unit {
-	newUnit := Unit{members: make([]Cell, len(u.members)), pivot: cell}
+	unit := Unit{members: make([]Cell, len(u.members)), pivot: cell}
 	for i, member := range u.members {
-		newX := cell.x + (member.x - u.pivot.x)
-		newY := cell.y + (member.y - u.pivot.y)
-		newUnit.members[i] = Cell{y: newY, x: newX}
+		x := cell.x + (member.x - u.pivot.x)
+		y := cell.y + (member.y - u.pivot.y)
+		unit.members[i] = Cell{y: y, x: x}
 	}
-	return newUnit
+	return unit
 }
 
 func TargetLocation(board Board, unit Unit) Unit {
