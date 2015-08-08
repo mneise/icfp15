@@ -8,7 +8,7 @@ func TestMoveToLowerRight(t *testing.T) {
 	target := Unit{Members: []Cell{Cell{X: 2, Y: 1}}, Pivot: Cell{X: 2, Y: 1}}
 
 	actual := b.MoveSequence(atom, target)
-	expected := []Command{E, SE}
+	expected := []Move{E, SE}
 
 	if len(actual) != len(expected) {
 		t.Errorf("Not the same amount of moves: %v expected %v", actual, expected)
@@ -28,7 +28,7 @@ func TestMoveToLowerLeft(t *testing.T) {
 	target := Unit{Members: []Cell{Cell{X: 0, Y: 1}}, Pivot: Cell{X: 0, Y: 1}}
 
 	actual := b.MoveSequence(atom, target)
-	expected := []Command{W, SE}
+	expected := []Move{W, SE}
 
 	if len(actual) != len(expected) {
 		t.Errorf("Not the same amount of moves: %v expected %v", actual, expected)
@@ -48,7 +48,7 @@ func TestMoveFurtherToLowerLeft(t *testing.T) {
 	target := Unit{Members: []Cell{Cell{X: 0, Y: 4}}, Pivot: Cell{X: 0, Y: 4}}
 
 	actual := b.MoveSequence(atom, target)
-	expected := []Command{W, SE, SW, SE, SW}
+	expected := []Move{W, SE, SW, SE, SW}
 
 	if len(actual) != len(expected) {
 		t.Errorf("Not the same amount of moves: %v expected %v", actual, expected)

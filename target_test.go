@@ -105,14 +105,14 @@ func TestIsValidUnit(t *testing.T) {
 	}
 }
 
-func TestCommandsToMoves(t *testing.T) {
-	cs := []Command{E, SE, RC}
+func TestMovesToCommands(t *testing.T) {
+	cs := []Move{E, SE, RC}
 	expected := []string{"b", "l", "d"}
-	actual := CommandsToMoves(cs)
+	actual := MovesToCommands(cs)
 
 	for i := range expected {
 		if expected[i] != actual[i] {
-			t.Errorf("Expected move sequence to be: %v but was: %v", expected, actual)
+			t.Errorf("Expected command sequence to be: %v but was: %v", expected, actual)
 		}
 	}
 }

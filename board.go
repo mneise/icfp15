@@ -11,7 +11,7 @@ func main() {
 	t := TargetLocation(b, u)
 	s := b.StartLocation(u)
 	m := b.MoveSequence(s, t)
-	cs := CommandsToMoves(m)
+	cs := MovesToCommands(m)
 
 	fmt.Printf("Found moves: %v for board: %v and unit: %v\n", cs, b, u)
 }
@@ -25,10 +25,10 @@ type Unit struct {
 	Members []Cell
 	Pivot   Cell
 }
-type Command int
+type Move int
 
 const (
-	E Command = iota
+	E Move = iota
 	W
 	SE
 	SW
@@ -36,7 +36,7 @@ const (
 	RCC
 )
 
-var moves = map[Command][]string{
+var commands = map[Move][]string{
 	E:   []string{"b", "c", "e", "f", "y", "2"},
 	W:   []string{"p", "'", "!", ".", "0", "3"},
 	SE:  []string{"l", "m", "n", "o", " ", "5"},
@@ -45,12 +45,12 @@ var moves = map[Command][]string{
 	RCC: []string{"k", "s", "t", "u", "w", "x"},
 }
 
-func CommandsToMoves(cs []Command) []string {
-	m := []string{}
-	for _, c := range cs {
-		m = append(m, moves[c][0])
+func MovesToCommands(ms []Move) []string {
+	cs := []string{}
+	for _, m := range ms {
+		cs = append(cs, commands[m][0])
 	}
-	return m
+	return cs
 }
 
 // todo: should we use float64 just cause json
@@ -149,9 +149,9 @@ func (c Cell) isFull(b Board) bool {
 	return b[c.Y][c.X]
 }
 
-func (b Board) MoveSequence(s Unit, t Unit) []Command {
+func (b Board) MoveSequence(s Unit, t Unit) []Move {
 
-	commands := []Command{}
+	moves := []Move{}
 
 	// neg - left
 	// pos - right
@@ -166,9 +166,9 @@ func (b Board) MoveSequence(s Unit, t Unit) []Command {
 	// move left / right
 	for i := 0; i < xSteps; i++ {
 		if direction < 0 {
-			commands = append(commands, W)
+			moves = append(moves, W)
 		} else {
-			commands = append(commands, E)
+			moves = append(moves, E)
 		}
 	}
 
@@ -176,13 +176,13 @@ func (b Board) MoveSequence(s Unit, t Unit) []Command {
 	for i := 0; i < ySteps; i++ {
 		switch {
 		case i%2 == 0:
-			commands = append(commands, SE)
+			moves = append(moves, SE)
 		case i%2 == 1:
-			commands = append(commands, SW)
+			moves = append(moves, SW)
 		}
 	}
 
-	return commands
+	return moves
 }
 
 func (c Cell) ShiftX(offset int) Cell {
