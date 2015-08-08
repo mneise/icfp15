@@ -11,7 +11,20 @@ func main() {
 
 	b := NewBoard(params.Program.Height, params.Program.Width, params.Program.Filled)
 
-	fmt.Printf("Created board %v", b)
+	fmt.Printf("Created board %v\n", b)
+
+	out := &Output{
+		ProblemId: 1,
+		Seed:      2,
+		Tag:       "blubb",
+		Solution:  "Ei!",
+	}
+
+	o, err := json.Marshal(out)
+	if err != nil {
+		panic(fmt.Sprintf("can't marshal to json: %v", err))
+	}
+	fmt.Println(string(o))
 }
 
 func testMain() {
@@ -36,6 +49,13 @@ type Unit struct {
 	Pivot   Cell
 }
 type Move int
+
+type Output struct {
+	ProblemId int    `json:"problemId"`
+	Seed      int    `json:"seed"`
+	Tag       string `json:"tag"`
+	Solution  string `json:"solution"`
+}
 
 type Params struct {
 	Program              Program
