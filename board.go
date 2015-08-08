@@ -14,9 +14,9 @@ func main() {
 	fmt.Printf("Created board %v\n", b)
 
 	out := &Output{
-		ProblemId: 1,
+		ProblemId: params.Program.Id,
 		Seed:      2,
-		Tag:       "blubb",
+		Tag:       "hippo rules.",
 		Solution:  "Ei!",
 	}
 
@@ -49,6 +49,17 @@ type Unit struct {
 	Pivot   Cell
 }
 type Move int
+
+// todo: should we use float64 just cause json
+type Program struct {
+	Id           int
+	Units        []Unit
+	Width        int
+	Height       int
+	Filled       []Cell
+	SourceLength int
+	SourceSeeds  []int
+}
 
 type Output struct {
 	ProblemId int    `json:"problemId"`
@@ -111,17 +122,6 @@ func MovesToCommands(ms []Move) []string {
 		cs = append(cs, commands[m][0])
 	}
 	return cs
-}
-
-// todo: should we use float64 just cause json
-type Program struct {
-	Id           int
-	Units        []Unit
-	Width        int
-	Height       int
-	Filled       []Cell
-	SourceLength int
-	SourceSeeds  []int
 }
 
 func ReadProgram(data []byte) *Program {
