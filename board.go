@@ -16,7 +16,6 @@ type Unit struct {
 	members []Cell
 	pivot   Cell
 }
-type BoardUnit Unit
 type Command int
 
 const (
@@ -41,10 +40,28 @@ func NewBoard(rows int, cols int, cells []Cell) Board {
 	return b
 }
 
-func TargetLocation(board Board, unit Unit) BoardUnit {
-	return BoardUnit{[]Cell{Cell{1, 1}}, Cell{1, 1}}
+func UnitRelativeToCell(unit Unit, cell Cell) Unit {
+	newUnit := Unit{members: make([]Cell, len(unit.members)), pivot: cell}
+	for i, member := range unit.members {
+		newRow := cell.row + (member.row - unit.pivot.row)
+		newCol := cell.col + (member.col - unit.pivot.col)
+		newUnit.members[i] = Cell{newRow, newCol}
+	}
+	return newUnit
 }
 
-func MoveToTarget(board Board, unit Unit, target BoardUnit) []Command {
+func TargetLocation(board Board, unit Unit) Unit {
+	// for y := range board {
+	// 	for x := range board[y] {
+	// 		for cell := range unit.members {
+
+	// 		}
+	// 	}
+	// }
+
+	return Unit{[]Cell{Cell{1, 1}}, Cell{1, 1}}
+}
+
+func MoveToTarget(board Board, unit Unit, target Unit) []Command {
 	return []Command{E, SE}
 }
