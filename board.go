@@ -1,6 +1,8 @@
 package main
 
+import "flag"
 import "fmt"
+import "io/ioutil"
 import "math"
 import "encoding/json"
 
@@ -26,6 +28,36 @@ type Unit struct {
 	Pivot   Cell
 }
 type Move int
+
+type ProgramParams struct {
+	Data                 []byte
+	TimeLimitSeconds     int
+	MemoryLimitMegaBytes int
+	Cores                int
+	PhraseOfPower        string
+}
+
+func ParseArgs() ProgramParams {
+	var f = flag.String("f", "", "input file name")
+	var t = flag.Int("t", 0, "time limit in seconds")
+	var m = flag.Int("m", 0, "memory limit in megabytes")
+	var c = flag.Int("c", 0, "number of cores available")
+	var p = flag.String("p", "Ei!", "phrase of power")
+
+	flag.Parse()
+
+	d, err := ioutil.ReadFile(*f)
+	if err != nil {
+		panic(fmt.Sprintf("can't open file %v", f))
+	}
+	return ProgramParams{
+		Data:                 d,
+		TimeLimitSeconds:     *t,
+		MemoryLimitMegaBytes: *m,
+		Cores:                *c,
+		PhraseOfPower:        *p,
+	}
+}
 
 const (
 	E Move = iota
