@@ -51,16 +51,18 @@ func (u Unit) MoveTo(cell Cell) Unit {
 	return unit
 }
 
-func TargetLocation(board Board, unit Unit) Unit {
-	// for y := range board {
-	// 	for x := range board[y] {
-	// 		for cell := range unit.members {
+func TargetLocation(b Board, u Unit) Unit {
+	t := Unit{}
+	for y := range b {
+		for x := range b[y] {
+			tmp := u.MoveTo(Cell{x, y})
+			if tmp.isValid(b) {
+				t = tmp
+			}
+		}
+	}
 
-	// 		}
-	// 	}
-	// }
-
-	return Unit{[]Cell{Cell{1, 1}}, Cell{1, 1}}
+	return t
 }
 
 func (b Board) Width() int {
@@ -77,9 +79,9 @@ func (b Board) Height() int {
 
 func (c Cell) isValid(b Board) bool {
 	if c.x < 0 ||
-		c.x > b.Width() ||
+		c.x >= b.Width() ||
 		c.y < 0 ||
-		c.y > b.Height() ||
+		c.y >= b.Height() ||
 		c.isFull(b) {
 		return false
 	}
