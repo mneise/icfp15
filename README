@@ -1,1 +1,1 @@
-hello
+dependencies: golang 1.4.2 https://golang.org/doc/install

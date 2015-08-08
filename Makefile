@@ -1,3 +1,3 @@
 all:
-	go build -o a
+	go build -o play_icfp2015
 
