@@ -7,6 +7,14 @@ import "math"
 import "encoding/json"
 
 func main() {
+	params := ParseArgs()
+
+	b := NewBoard(params.Program.Height, params.Program.Width, params.Program.Filled)
+
+	fmt.Printf("Created board %v", b)
+}
+
+func testMain() {
 	u := Unit{Members: []Cell{Cell{0, 0}}, Pivot: Cell{0, 0}}
 	b := NewBoard(3, 3, []Cell{})
 
@@ -29,15 +37,15 @@ type Unit struct {
 }
 type Move int
 
-type ProgramParams struct {
-	Data                 []byte
+type Params struct {
+	Program              Program
 	TimeLimitSeconds     int
 	MemoryLimitMegaBytes int
 	Cores                int
 	PhraseOfPower        string
 }
 
-func ParseArgs() ProgramParams {
+func ParseArgs() Params {
 	var f = flag.String("f", "", "input file name")
 	var t = flag.Int("t", 0, "time limit in seconds")
 	var m = flag.Int("m", 0, "memory limit in megabytes")
@@ -50,8 +58,8 @@ func ParseArgs() ProgramParams {
 	if err != nil {
 		panic(fmt.Sprintf("can't open file %v", f))
 	}
-	return ProgramParams{
-		Data:                 d,
+	return Params{
+		Program:              *ReadProgram(d),
 		TimeLimitSeconds:     *t,
 		MemoryLimitMegaBytes: *m,
 		Cores:                *c,
