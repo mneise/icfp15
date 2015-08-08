@@ -10,8 +10,8 @@ func main() {
 
 type Board [][]bool
 type Cell struct {
-	y int
 	x int
+	y int
 }
 type Unit struct {
 	members []Cell
@@ -46,7 +46,7 @@ func UnitRelativeToCell(unit Unit, cell Cell) Unit {
 	for i, member := range unit.members {
 		newX := cell.x + (member.x - unit.pivot.x)
 		newY := cell.y + (member.y - unit.pivot.y)
-		newUnit.members[i] = Cell{newY, newX}
+		newUnit.members[i] = Cell{y: newY, x: newX}
 	}
 	return newUnit
 }
@@ -63,6 +63,18 @@ func TargetLocation(board Board, unit Unit) Unit {
 	return Unit{[]Cell{Cell{1, 1}}, Cell{1, 1}}
 }
 
+func (b Board) Width() int {
+	if len(b) > 0 {
+		return len(b[0])
+	}
+
+	return 0
+}
+
+func (b Board) Height() int {
+	return len(b)
+}
+
 func MoveToTarget(board Board, unit Unit, target Unit) []Command {
 
 	// get start location
@@ -74,8 +86,16 @@ func MoveToTarget(board Board, unit Unit, target Unit) []Command {
 	return []Command{E, SE}
 }
 
-// func StartLocation(b Board, u Unit) BoardUnit {
-// }
+func (c Cell) ShiftX(offset int) Cell {
+	return Cell{x: c.x + offset, y: c.y}
+}
+
+func (b Board) StartLocation(u Unit) Unit {
+	offset := (b.Width() - u.Width()) / 2
+	newPivot := u.pivot.ShiftX(offset)
+
+	return UnitRelativeToCell(u, newPivot)
+}
 
 func (u Unit) Width() int {
 	minX := math.MaxInt32

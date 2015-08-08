@@ -19,7 +19,7 @@ func TestMoveToLowerRight(t *testing.T) {
 // func TestMoveToLowerLeft(t *testing.T) {
 //   b := NewBoard(2, 2, []Cell{})
 //   atom := Unit{members: []Cell{Cell{0,0}}, pivot: Cell{0,0}}
-//   target := BoardUnit{members: []Cell{Cell{1,0}}, pivot: Cell{1,0}}
+//   target := Unit{members: []Cell{Cell{1,0}}, pivot: Cell{1,0}}
 //   actual := MoveToTarget(b, atom, target)
 //   expected := []Command{W, SE}
 
@@ -40,7 +40,7 @@ func TestUnitWidth(t *testing.T) {
 			expected: 1,
 		},
 		{
-			atom:     Unit{members: []Cell{Cell{0, 0}, Cell{0, 2}}, pivot: Cell{0, 1}},
+			atom:     Unit{members: []Cell{Cell{0, 0}, Cell{2, 0}}, pivot: Cell{1, 0}},
 			expected: 3,
 		},
 	}
@@ -75,6 +75,45 @@ func TestUnitHeight(t *testing.T) {
 
 		if actual != data.expected {
 			t.Errorf("Failed identify height: %v expected %v", actual, data.expected)
+		}
+	}
+
+}
+
+func TestStartLocation(t *testing.T) {
+	atoms := []struct {
+		board    Board
+		atom     Unit
+		expected Unit
+	}{
+		{
+			board:    NewBoard(2, 2, []Cell{}),
+			atom:     Unit{members: []Cell{Cell{0, 0}}, pivot: Cell{0, 0}},
+			expected: Unit{members: []Cell{Cell{0, 0}}, pivot: Cell{0, 0}},
+		},
+		{
+			board:    NewBoard(2, 3, []Cell{}),
+			atom:     Unit{members: []Cell{Cell{0, 0}}, pivot: Cell{0, 0}},
+			expected: Unit{members: []Cell{Cell{1, 0}}, pivot: Cell{1, 0}},
+		},
+		// {
+		// 	atom:     Unit{members: []Cell{Cell{0, 0}, Cell{2, 2}}, pivot: Cell{1, 1}},
+		// 	expected: 3,
+		// },
+	}
+
+	for _, data := range atoms {
+		actual := data.board.StartLocation(data.atom)
+
+		if len(actual.members) != len(data.expected.members) {
+			t.Errorf("Not the same number of members: %v expected %v", actual, data.expected)
+			return
+		}
+
+		for i, member := range data.expected.members {
+			if actual.members[i] != member {
+				t.Errorf("Failed identify height: %v expected %v", actual, data.expected)
+			}
 		}
 	}
 
