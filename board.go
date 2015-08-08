@@ -166,10 +166,10 @@ func ReadProgram(data []byte) *Program {
 	return p
 }
 
-func NewBoard(rows int, cols int, cells []Cell) Board {
-	b := make([][]bool, rows)
+func NewBoard(height int, width int, cells []Cell) Board {
+	b := make([][]bool, height)
 	for i := range b {
-		b[i] = make([]bool, cols)
+		b[i] = make([]bool, width)
 	}
 
 	for _, c := range cells {
