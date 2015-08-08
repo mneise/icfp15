@@ -220,7 +220,7 @@ func (c Cell) isValid(b Board) bool {
 		c.X >= b.Width() ||
 		c.Y < 0 ||
 		c.Y >= b.Height() ||
-		c.isFull(b) {
+		b.isCellFull(c) {
 		return false
 	}
 	return true
@@ -240,8 +240,17 @@ func (u Unit) isValid(b Board) bool {
 	return true
 }
 
-func (c Cell) isFull(b Board) bool {
+func (b Board) isCellFull(c Cell) bool {
 	return b[c.Y][c.X]
+}
+
+func (b Board) IsRowFull(r int) bool {
+	for _, c := range b[r] {
+		if !c {
+			return false
+		}
+	}
+	return true
 }
 
 func (b Board) MoveSequence(s Unit, t Unit) []Move {
@@ -349,4 +358,9 @@ func CalcUnitIndexes(rands []int, l int) []int {
 		idxs[i] = rand % l
 	}
 	return idxs
+}
+
+func (b Board) ClearRows() Board {
+	nb := NewBoard(b.Height(), b.Width(), []Cell{})
+	return nb
 }

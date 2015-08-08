@@ -142,3 +142,15 @@ func TestCalcUnitIndexes(t *testing.T) {
 		}
 	}
 }
+
+func TestIsRowFull(t *testing.T) {
+	b := NewBoard(2, 2, []Cell{Cell{0, 0}, Cell{1, 0}})
+
+	if !b.IsRowFull(0) {
+		t.Errorf("Expected row to be full: %v but wasn't.", b[0])
+	}
+
+	if b.IsRowFull(1) {
+		t.Errorf("Expected row not to be full: %v but was.", b[1])
+	}
+}
