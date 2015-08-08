@@ -86,6 +86,20 @@ type Unit struct {
 }
 type Move int
 
+func (m Move) String() string {
+	switch {
+	case m == E:
+		return "E"
+	case m == SE:
+		return "SE"
+	case m == W:
+		return "W"
+	case m == SW:
+		return "SW"
+	}
+	return "?"
+}
+
 // todo: should we use float64 just cause json
 type Program struct {
 	Id           int
@@ -180,6 +194,27 @@ func NewBoard(height int, width int, cells []Cell) Board {
 	return b
 }
 
+func (c Cell) Move(m Move, b Board) Cell {
+	switch {
+	case m == W:
+		return Cell{X: c.X - 1, Y: c.Y}
+	case m == E:
+		return Cell{X: c.X + 1, Y: c.Y}
+
+	case m == SW && c.Y%2 == 1 && (c.X > 0 || c.X == 0):
+		return Cell{X: c.X, Y: c.Y + 1}
+	case m == SW && c.Y%2 == 0 && (c.X > 0):
+		return Cell{X: c.X - 1, Y: c.Y + 1}
+
+	case m == SE && c.Y%2 == 0 && (c.X < b.Width()-1 || c.X == b.Width()-1):
+		return Cell{X: c.X, Y: c.Y + 1}
+	case m == SE && c.Y%2 == 1 && c.X < b.Width()-1:
+		return Cell{X: c.X + 1, Y: c.Y + 1}
+	}
+
+	return Cell{X: -1, Y: -1}
+}
+
 func (u Unit) MoveTo(cell Cell) Unit {
 	unit := Unit{Members: make([]Cell, len(u.Members)), Pivot: cell}
 	for i, member := range u.Members {
@@ -249,40 +284,81 @@ func (b Board) IsRowFull(r int) bool {
 	return true
 }
 
-func (b Board) MoveSequence(s Unit, t Unit) []Move {
+func direction(s, t Cell) (xd, yd int) {
+	yd = t.Y - s.Y
+	// ys = yd
+	// if ys < 0 {
+	// 	ys = -ys
+	// }
 
-	moves := []Move{}
+	xd = t.X - s.X
+	// xs = xd
+	// if xs < 0 {
+	// 	xs = -xs
+	// }
 
+	return xd, yd //, xs, ys
+}
+
+func moves(xd, yd int) []Move {
 	// neg - left
 	// pos - right
 	// zero - down
-	direction := t.Pivot.X - s.Pivot.X
-	xSteps := direction
-	if xSteps < 0 {
-		xSteps = -xSteps
-	}
-	ySteps := t.Pivot.Y - s.Pivot.Y
 
-	// move left / right
-	for i := 0; i < xSteps; i++ {
-		if direction < 0 {
-			moves = append(moves, W)
-		} else {
-			moves = append(moves, E)
+	switch {
+	case xd < 0 && yd > 0: // left down
+		return []Move{W, SW, SE, E}
+	case xd == 0 && yd > 0: // down
+		return []Move{SE, SW, E, W}
+	case xd > 0 && yd > 0: // right down
+		return []Move{E, SE, SW, W}
+	case xd < 0 && yd == 0: // left
+		return []Move{W}
+	case xd > 0 && yd == 0: // right
+		return []Move{E}
+	case xd == 0 && yd == 0: // done
+	case yd < 0: // can't move up
+	}
+
+	return []Move{}
+}
+
+// TODO: never EW or WE
+func (b Board) MoveSequence(s Unit, t Unit) []Move {
+	// fmt.Printf("move from %v to %v\n", s.Pivot, t.Pivot)
+	mu := s
+	mp := s.Pivot
+	xd, yd := direction(s.Pivot, t.Pivot)
+	ms := []Move{}
+
+	for true {
+		before := len(ms)
+		// fmt.Printf("main loop mp %v xd %v yd %v ms %v\n", mp, xd, yd, ms)
+
+		for _, m := range moves(xd, yd) {
+			// fmt.Printf("found move %v\n", m)
+			// try to move pivot / unit
+			tp := mp.Move(m, b)
+			tu := mu.MoveTo(tp)
+			if tp.isValid(b) && tu.isValid(b) { // found valid one,yay!
+				mu = tu
+				mp = tp
+				xd, yd = direction(mp, t.Pivot)
+				ms = append(ms, m)
+				break
+			}
+		}
+
+		if before == len(ms) {
+			break // couldn't find move, skip out
 		}
 	}
 
-	// move down
-	for i := 0; i < ySteps; i++ {
-		switch {
-		case i%2 == 0:
-			moves = append(moves, SE)
-		case i%2 == 1:
-			moves = append(moves, SW)
-		}
+	if mp.X == t.Pivot.X && mp.Y == t.Pivot.Y {
+		return append(ms, SE) // lock in move
 	}
 
-	return append(moves, SE) // try to lock in via an move south
+	return []Move{} // can't find a legal way
 }
 
 func (c Cell) ShiftX(offset int) Cell {

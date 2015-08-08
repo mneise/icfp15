@@ -22,6 +22,26 @@ func TestMoveToLowerRight(t *testing.T) {
 	}
 }
 
+func TestMoveToLowerRightWithObstacle(t *testing.T) {
+	b := NewBoard(2, 3, []Cell{Cell{X: 2, Y: 0}})
+	atom := Unit{Members: []Cell{Cell{X: 1, Y: 0}}, Pivot: Cell{X: 1, Y: 0}}
+	target := Unit{Members: []Cell{Cell{X: 2, Y: 1}}, Pivot: Cell{X: 2, Y: 1}}
+
+	actual := b.MoveSequence(atom, target)
+	expected := []Move{SE, E, SE}
+
+	if len(actual) != len(expected) {
+		t.Errorf("Not the same amount of moves: %v expected %v", actual, expected)
+		return
+	}
+
+	for i := range expected {
+		if actual[i] != expected[i] {
+			t.Errorf("Failed to move to lower right, got moves: %v expected %v", actual, expected)
+		}
+	}
+}
+
 func TestMoveToLowerLeft(t *testing.T) {
 	b := NewBoard(2, 3, []Cell{})
 	atom := Unit{Members: []Cell{Cell{X: 1, Y: 0}}, Pivot: Cell{X: 1, Y: 0}}
@@ -48,7 +68,7 @@ func TestMoveFurtherToLowerLeft(t *testing.T) {
 	target := Unit{Members: []Cell{Cell{X: 0, Y: 4}}, Pivot: Cell{X: 0, Y: 4}}
 
 	actual := b.MoveSequence(atom, target)
-	expected := []Move{W, SE, SW, SE, SW, SE}
+	expected := []Move{W, SE, SE, W, SE, SE, W, SE}
 
 	if len(actual) != len(expected) {
 		t.Errorf("Not the same amount of moves: %v expected %v", actual, expected)
@@ -57,7 +77,7 @@ func TestMoveFurtherToLowerLeft(t *testing.T) {
 
 	for i := range expected {
 		if actual[i] != expected[i] {
-			t.Errorf("Failed to move to lower right, got moves: %v expected %v", actual, expected)
+			t.Errorf("Failed to move to further lower left, got moves: %v expected %v", actual, expected)
 		}
 	}
 }
@@ -174,6 +194,100 @@ func TestFillBoard(t *testing.T) {
 
 	if !actual[0][0] || !actual[1][1] || actual[0][1] || actual[1][0] {
 		t.Errorf("Failed to read fill board got: %v", actual)
+	}
+
+}
+
+func TestMoveCell(t *testing.T) {
+	b := NewBoard(2, 2, []Cell{})
+	data := []struct {
+		c        Move
+		s        Cell
+		expected Cell
+	}{
+		{
+			c:        E,
+			s:        Cell{0, 0},
+			expected: Cell{1, 0},
+		},
+		{
+			c:        W,
+			s:        Cell{1, 0},
+			expected: Cell{0, 0},
+		},
+		{
+			c:        SE,
+			s:        Cell{0, 0},
+			expected: Cell{0, 1},
+		},
+		{
+			c:        SW,
+			s:        Cell{0, 0},
+			expected: Cell{-1, -1},
+		},
+		{
+			c:        SW,
+			s:        Cell{1, 0},
+			expected: Cell{0, 1},
+		},
+		{
+			c:        SE,
+			s:        Cell{1, 0},
+			expected: Cell{1, 1},
+		},
+		{
+			c:        SE,
+			s:        Cell{1, 1},
+			expected: Cell{-1, -1},
+		},
+	}
+
+	for _, d := range data {
+		if actual := d.s.Move(d.c, b); actual != d.expected {
+			t.Errorf("incorrect move: actual %v expected %v", actual, d.expected)
+		}
+	}
+
+}
+
+func TestMoveCellBiggerBoard(t *testing.T) {
+	b := NewBoard(2, 4, []Cell{})
+	data := []struct {
+		c        Move
+		s        Cell
+		expected Cell
+	}{
+		{
+			c:        SE,
+			s:        Cell{0, 0},
+			expected: Cell{0, 1},
+		},
+		{
+			c:        SE,
+			s:        Cell{0, 1},
+			expected: Cell{1, 2},
+		},
+		{
+			c:        SW,
+			s:        Cell{0, 0},
+			expected: Cell{-1, -1},
+		},
+		{
+			c:        SW,
+			s:        Cell{1, 0},
+			expected: Cell{0, 1},
+		},
+		{
+			c:        SW,
+			s:        Cell{1, 1},
+			expected: Cell{1, 2},
+		},
+	}
+
+	for _, d := range data {
+		if actual := d.s.Move(d.c, b); actual != d.expected {
+			t.Errorf("incorrect move: actual %v expected %v", actual, d.expected)
+		}
 	}
 
 }
