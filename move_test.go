@@ -4,10 +4,16 @@ import "testing"
 
 func TestMoveToLowerRight(t *testing.T) {
 	b := NewBoard(2, 3, []Cell{})
-	atom := Unit{members: []Cell{Cell{0, 0}}, pivot: Cell{0, 0}}
-	target := Unit{members: []Cell{Cell{1, 2}}, pivot: Cell{1, 2}}
-	actual := MoveToTarget(b, atom, target)
+	atom := Unit{members: []Cell{Cell{x: 1, y: 0}}, pivot: Cell{x: 1, y: 0}}
+	target := Unit{members: []Cell{Cell{x: 2, y: 1}}, pivot: Cell{x: 2, y: 1}}
+
+	actual := b.MoveSequence(atom, target)
 	expected := []Command{E, SE}
+
+	if len(actual) != len(expected) {
+		t.Errorf("Not the same amount of moves: %v expected %v", actual, expected)
+		return
+	}
 
 	for i := range expected {
 		if actual[i] != expected[i] {
@@ -16,19 +22,45 @@ func TestMoveToLowerRight(t *testing.T) {
 	}
 }
 
-// func TestMoveToLowerLeft(t *testing.T) {
-//   b := NewBoard(2, 2, []Cell{})
-//   atom := Unit{members: []Cell{Cell{0,0}}, pivot: Cell{0,0}}
-//   target := Unit{members: []Cell{Cell{1,0}}, pivot: Cell{1,0}}
-//   actual := MoveToTarget(b, atom, target)
-//   expected := []Command{W, SE}
+func TestMoveToLowerLeft(t *testing.T) {
+	b := NewBoard(2, 3, []Cell{})
+	atom := Unit{members: []Cell{Cell{x: 1, y: 0}}, pivot: Cell{x: 1, y: 0}}
+	target := Unit{members: []Cell{Cell{x: 0, y: 1}}, pivot: Cell{x: 0, y: 1}}
 
-//   for i := range expected {
-//     if actual[i] != expected[i] {
-//       t.Errorf("Failed to move to lower right, got moves: %v expected %v", actual, expected)
-//     }
-//   }
-// }
+	actual := b.MoveSequence(atom, target)
+	expected := []Command{W, SE}
+
+	if len(actual) != len(expected) {
+		t.Errorf("Not the same amount of moves: %v expected %v", actual, expected)
+		return
+	}
+
+	for i := range expected {
+		if actual[i] != expected[i] {
+			t.Errorf("Failed to move to lower right, got moves: %v expected %v", actual, expected)
+		}
+	}
+}
+
+func TestMoveFurtherToLowerLeft(t *testing.T) {
+	b := NewBoard(5, 3, []Cell{})
+	atom := Unit{members: []Cell{Cell{x: 1, y: 0}}, pivot: Cell{x: 1, y: 0}}
+	target := Unit{members: []Cell{Cell{x: 0, y: 4}}, pivot: Cell{x: 0, y: 4}}
+
+	actual := b.MoveSequence(atom, target)
+	expected := []Command{W, SE, SW, SE, SW}
+
+	if len(actual) != len(expected) {
+		t.Errorf("Not the same amount of moves: %v expected %v", actual, expected)
+		return
+	}
+
+	for i := range expected {
+		if actual[i] != expected[i] {
+			t.Errorf("Failed to move to lower right, got moves: %v expected %v", actual, expected)
+		}
+	}
+}
 
 func TestUnitWidth(t *testing.T) {
 	atoms := []struct {
