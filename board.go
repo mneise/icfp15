@@ -18,7 +18,7 @@ func main() {
 	for _, u := range params.Program.Units {
 		t := TargetLocation(b, u)
 		s := b.StartLocation(u)
-		m := b.MoveSequence(s, t) // TODO: lock in command?
+		m := b.MoveSequence(s, t)
 		cs := MovesToCommands(m)
 		for _, c := range cs {
 			solution = solution + c
@@ -268,7 +268,7 @@ func (b Board) MoveSequence(s Unit, t Unit) []Move {
 		}
 	}
 
-	return moves
+	return append(moves, SE) // try to lock in via an move south
 }
 
 func (c Cell) ShiftX(offset int) Cell {
