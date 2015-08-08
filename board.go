@@ -305,7 +305,7 @@ func moves(xd, yd int) []Move {
 	case xd > 0 && yd == 0: // right
 		return []Move{E}
 	case xd == 0 && yd == 0: // done
-	case yd < 0: // can't move up
+	case yd < 0: // cant move up
 	}
 
 	return []Move{}
@@ -324,6 +324,11 @@ func (b Board) MoveSequence(s Unit, t Unit) []Move {
 		// fmt.Printf("main loop mp %v xd %v yd %v ms %v\n", mp, xd, yd, ms)
 
 		for _, m := range moves(xd, yd) {
+			if len(ms) > 0 &&
+				((m == W && ms[len(ms)-1] == E) || (m == E && ms[len(ms)-1] == W)) {
+				continue
+			}
+
 			// fmt.Printf("found move %v\n", m)
 			// try to move pivot / unit
 			tp := mp.Move(m, b)
@@ -338,7 +343,7 @@ func (b Board) MoveSequence(s Unit, t Unit) []Move {
 		}
 
 		if before == len(ms) {
-			break // couldn't find move, skip out
+			break // couldnt find move, skip out
 		}
 	}
 
