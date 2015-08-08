@@ -46,3 +46,26 @@ func TestUnitRelativeToCell(t *testing.T) {
 		t.Errorf("Failed to get relative cell, got cell: %v expected %v", actual, expected)
 	}
 }
+
+func TestIsValidUnit(t *testing.T) {
+	unit := Unit{members: []Cell{Cell{0, 0}}, pivot: Cell{0, 0}}
+	board := NewBoard(2, 2, []Cell{})
+
+	if !unit.isValid(board) {
+		t.Errorf("Expected unit: %v to be valid on board %v, but was invalid", unit, board)
+	}
+
+	unit = Unit{members: []Cell{Cell{0, 0}, Cell{1, 0}}, pivot: Cell{0, 0}}
+	board = NewBoard(2, 2, []Cell{Cell{1, 0}})
+
+	if unit.isValid(board) {
+		t.Errorf("Expected unit: %v to be invalid on board %v, but was valid", unit, board)
+	}
+
+	unit = Unit{members: []Cell{Cell{0, 0}, Cell{-1, 0}}, pivot: Cell{0, 0}}
+	board = NewBoard(2, 2, []Cell{})
+
+	if unit.isValid(board) {
+		t.Errorf("Expected unit: %v to be invalid on board %v, but was valid", unit, board)
+	}
+}

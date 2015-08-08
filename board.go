@@ -75,6 +75,35 @@ func (b Board) Height() int {
 	return len(b)
 }
 
+func (c Cell) isValid(b Board) bool {
+	if c.x < 0 ||
+		c.x > b.Width() ||
+		c.y < 0 ||
+		c.y > b.Height() ||
+		c.isFull(b) {
+		return false
+	}
+	return true
+}
+
+func (u Unit) isValid(b Board) bool {
+	if !u.pivot.isValid(b) {
+		return false
+	}
+
+	for _, c := range u.members {
+		if !c.isValid(b) {
+			return false
+		}
+	}
+
+	return true
+}
+
+func (c Cell) isFull(b Board) bool {
+	return b[c.y][c.x]
+}
+
 func MoveToTarget(board Board, unit Unit, target Unit) []Command {
 
 	// get start location
