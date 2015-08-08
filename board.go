@@ -10,8 +10,9 @@ func main() {
 	t := TargetLocation(b, u)
 	s := b.StartLocation(u)
 	m := b.MoveSequence(s, t)
+	cs := CommandsToMoves(m)
 
-	fmt.Printf("Found moves: %v for board: %v and unit: %v\n", m, b, u)
+	fmt.Printf("Found moves: %v for board: %v and unit: %v\n", cs, b, u)
 }
 
 type Board [][]bool
@@ -33,6 +34,23 @@ const (
 	RC
 	RCC
 )
+
+var moves = map[Command][]string{
+	E:   []string{"b", "c", "e", "f", "y", "2"},
+	W:   []string{"p", "'", "!", ".", "0", "3"},
+	SE:  []string{"l", "m", "n", "o", " ", "5"},
+	SW:  []string{"a", "g", "h", "i", "j", "4"},
+	RC:  []string{"d", "q", "r", "v", "z", "1"},
+	RCC: []string{"k", "s", "t", "u", "w", "x"},
+}
+
+func CommandsToMoves(cs []Command) []string {
+	m := []string{}
+	for _, c := range cs {
+		m = append(m, moves[c][0])
+	}
+	return m
+}
 
 func NewBoard(rows int, cols int, cells []Cell) Board {
 	b := make([][]bool, rows)

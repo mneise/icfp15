@@ -104,3 +104,15 @@ func TestIsValidUnit(t *testing.T) {
 		t.Errorf("Expected unit: %v to be invalid on board %v, but was valid", unit, board)
 	}
 }
+
+func TestCommandsToMoves(t *testing.T) {
+	cs := []Command{E, SE, RC}
+	expected := []string{"b", "l", "d"}
+	actual := CommandsToMoves(cs)
+
+	for i := range expected {
+		if expected[i] != actual[i] {
+			t.Errorf("Expected move sequence to be: %v but was: %v", expected, actual)
+		}
+	}
+}
