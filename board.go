@@ -104,15 +104,40 @@ func (c Cell) isFull(b Board) bool {
 	return b[c.y][c.x]
 }
 
-func MoveToTarget(board Board, unit Unit, target Unit) []Command {
+func (b Board) MoveSequence(s Unit, t Unit) []Command {
 
-	// get start location
+	commands := []Command{}
+
+	// neg - left
+	// pos - right
+	// zero - down
+	direction := t.pivot.x - s.pivot.x
+	xSteps := direction
+	if xSteps < 0 {
+		xSteps = -xSteps
+	}
+	ySteps := t.pivot.y - s.pivot.y
 
 	// move left / right
+	for i := 0; i < xSteps; i++ {
+		if direction < 0 {
+			commands = append(commands, W)
+		} else {
+			commands = append(commands, E)
+		}
+	}
 
 	// move down
+	for i := 0; i < ySteps; i++ {
+		switch {
+		case i%2 == 0:
+			commands = append(commands, SE)
+		case i%2 == 1:
+			commands = append(commands, SW)
+		}
+	}
 
-	return []Command{E, SE}
+	return commands
 }
 
 func (c Cell) ShiftX(offset int) Cell {
