@@ -166,10 +166,10 @@ func ReadProgram(data []byte) *Program {
 	return p
 }
 
-func NewBoard(rows int, cols int, cells []Cell) Board {
-	b := make([][]bool, rows)
+func NewBoard(height int, width int, cells []Cell) Board {
+	b := make([][]bool, height)
 	for i := range b {
-		b[i] = make([]bool, cols)
+		b[i] = make([]bool, width)
 	}
 
 	for _, c := range cells {
@@ -216,21 +216,16 @@ func (b Board) Height() int {
 }
 
 func (c Cell) isValid(b Board) bool {
-	if c.X < 0 ||
-		c.X >= b.Width() ||
-		c.Y < 0 ||
-		c.Y >= b.Height() ||
-		b.isCellFull(c) {
-		return false
-	}
-	return true
+	return c.X >= 0 &&
+		c.X < b.Width() &&
+		c.Y >= 0 &&
+		c.Y < b.Height() &&
+		!b.isCellFull(c)
 }
 
+// A unit is in a valid location if all of its cells are on empty board
+// cells. Note that a unit's pivot point need not be on a board cell.
 func (u Unit) isValid(b Board) bool {
-	if !u.Pivot.isValid(b) {
-		return false
-	}
-
 	for _, c := range u.Members {
 		if !c.isValid(b) {
 			return false
