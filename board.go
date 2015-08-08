@@ -4,8 +4,14 @@ import "fmt"
 import "math"
 
 func main() {
-	cs := []Cell{Cell{0, 0}, Cell{1, 1}}
-	fmt.Printf("hello, world %v\n", NewBoard(3, 2, cs))
+	u := Unit{members: []Cell{Cell{0, 0}}, pivot: Cell{0, 0}}
+	b := NewBoard(3, 3, []Cell{})
+
+	t := TargetLocation(b, u)
+	s := b.StartLocation(u)
+	m := b.MoveSequence(s, t)
+
+	fmt.Printf("Found moves: %v for board: %v and unit: %v\n", m, b, u)
 }
 
 type Board [][]bool
