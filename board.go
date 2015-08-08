@@ -23,7 +23,7 @@ func main() {
 		for _, c := range cs {
 			solution = solution + c
 		}
-		// TODO: fill board
+		b = b.FillCells(t.Members)
 	}
 
 	out := &Output{
@@ -38,6 +38,19 @@ func main() {
 		panic(fmt.Sprintf("can't marshal to json: %v", err))
 	}
 	fmt.Println(string(o))
+}
+
+func (b Board) FillCells(cells []Cell) Board {
+	nb := NewBoard(b.Height(), b.Width(), cells)
+	for y, row := range b {
+		for x, cell := range row {
+			if cell {
+				nb[y][x] = true
+			}
+		}
+	}
+
+	return nb
 }
 
 func testMain() {

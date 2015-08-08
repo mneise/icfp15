@@ -171,3 +171,13 @@ func TestReadProgram(t *testing.T) {
 	}
 
 }
+
+func TestFillBoard(t *testing.T) {
+	b := NewBoard(2, 2, []Cell{Cell{X: 1, Y: 1}})
+	actual := b.FillCells([]Cell{Cell{X: 0, Y: 0}})
+
+	if !actual[0][0] || !actual[1][1] || actual[0][1] || actual[1][0] {
+		t.Errorf("Failed to read fill board got: %v", actual)
+	}
+
+}
