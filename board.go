@@ -1,10 +1,59 @@
 package main
 
+import "flag"
 import "fmt"
+import "io/ioutil"
 import "math"
 import "encoding/json"
 
 func main() {
+	params := ParseArgs()
+
+	solution := ""
+	b := NewBoard(params.Program.Height, params.Program.Width, params.Program.Filled)
+
+	fmt.Printf("Created board %v\n", b)
+
+	// TODO: order units
+	for _, u := range params.Program.Units {
+		t := TargetLocation(b, u)
+		s := b.StartLocation(u)
+		m := b.MoveSequence(s, t)
+		cs := MovesToCommands(m)
+		for _, c := range cs {
+			solution = solution + c
+		}
+		b = b.FillCells(t.Members)
+	}
+
+	out := &Output{
+		ProblemId: params.Program.Id,
+		Seed:      2,
+		Tag:       "hippo rules.",
+		Solution:  solution,
+	}
+
+	o, err := json.Marshal(out)
+	if err != nil {
+		panic(fmt.Sprintf("can't marshal to json: %v", err))
+	}
+	fmt.Println(string(o))
+}
+
+func (b Board) FillCells(cells []Cell) Board {
+	nb := NewBoard(b.Height(), b.Width(), cells)
+	for y, row := range b {
+		for x, cell := range row {
+			if cell {
+				nb[y][x] = true
+			}
+		}
+	}
+
+	return nb
+}
+
+func testMain() {
 	u := Unit{Members: []Cell{Cell{0, 0}}, Pivot: Cell{0, 0}}
 	b := NewBoard(3, 3, []Cell{})
 
@@ -26,6 +75,54 @@ type Unit struct {
 	Pivot   Cell
 }
 type Move int
+
+// todo: should we use float64 just cause json
+type Program struct {
+	Id           int
+	Units        []Unit
+	Width        int
+	Height       int
+	Filled       []Cell
+	SourceLength int
+	SourceSeeds  []int
+}
+
+type Output struct {
+	ProblemId int    `json:"problemId"`
+	Seed      int    `json:"seed"`
+	Tag       string `json:"tag"`
+	Solution  string `json:"solution"`
+}
+
+type Params struct {
+	Program              Program
+	TimeLimitSeconds     int
+	MemoryLimitMegaBytes int
+	Cores                int
+	PhraseOfPower        string
+}
+
+func ParseArgs() Params {
+	var f = flag.String("f", "", "input file name")
+	var t = flag.Int("t", 0, "time limit in seconds")
+	var m = flag.Int("m", 0, "memory limit in megabytes")
+	var c = flag.Int("c", 0, "number of cores available")
+	var p = flag.String("p", "Ei!", "phrase of power")
+
+	flag.Parse()
+
+	d, err := ioutil.ReadFile(*f)
+	if err != nil {
+		panic(fmt.Sprintf("can't open file %v", f))
+	}
+	return Params{
+		Program:              *ReadProgram(d),
+		TimeLimitSeconds:     *t,
+		MemoryLimitMegaBytes: *m,
+		Cores:                *c,
+		PhraseOfPower:        *p,
+	}
+}
 
 const (
 	E Move = iota
@@ -51,17 +148,6 @@ func MovesToCommands(ms []Move) []string {
 		cs = append(cs, commands[m][0])
 	}
 	return cs
-}
-
-// todo: should we use float64 just cause json
-type Program struct {
-	Id           int
-	Units        []Unit
-	Width        int
-	Height       int
-	Filled       []Cell
-	SourceLength int
-	SourceSeeds  []int
 }
 
 func ReadProgram(data []byte) *Program {
@@ -182,7 +268,7 @@ func (b Board) MoveSequence(s Unit, t Unit) []Move {
 		}
 	}
 
-	return moves
+	return append(moves, SE) // try to lock in via an move south
 }
 
 func (c Cell) ShiftX(offset int) Cell {
