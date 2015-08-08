@@ -47,3 +47,4 @@ func TargetLocation(board Board, unit Unit) BoardUnit {
 func MoveToTarget(board Board, unit Unit, target BoardUnit) []Command {
   return []Command{E, SW}
 }
+
