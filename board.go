@@ -12,6 +12,20 @@ type Cell struct {
   row int
   col int
 }
+type Unit struct {
+  cells []Cell
+  pivot Cell
+}
+type BoardUnit Unit
+type Command int
+const (
+  E Command = iota
+  W
+  SE
+  SW
+  RC
+  RCC
+)
 
 func NewBoard(rows int, cols int, cells []Cell) Board {
   b := make([][]bool, rows)
@@ -26,3 +40,10 @@ func NewBoard(rows int, cols int, cells []Cell) Board {
   return b
 }
 
+func TargetLocation(board Board, unit Unit) BoardUnit {
+  return BoardUnit{[]Cell{}, Cell{}}
+}
+
+func MoveToTarget(board Board, unit Unit, target BoardUnit) []Command {
+  return []Command{E, SW}
+}
