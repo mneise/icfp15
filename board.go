@@ -355,7 +355,20 @@ func CalcUnitIndexes(rands []int, l int) []int {
 	return idxs
 }
 
-func (b Board) ClearRows() Board {
+func (b Board) ClearFullRows() Board {
 	nb := NewBoard(b.Height(), b.Width(), []Cell{})
+	copy(nb, b)
+	for i := b.Height() - 1; i >= 0; i-- {
+		if nb.IsRowFull(i) {
+			if i == b.Height()-1 {
+				nb = nb[:i]
+			} else {
+				nb = append(nb[:i], nb[i+1:]...)
+			}
+			r := make([]bool, b.Width())
+			nb = append([][]bool{r}, nb...)
+			i++
+		}
+	}
 	return nb
 }

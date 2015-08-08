@@ -3,6 +3,11 @@ package main
 import "testing"
 
 func equalsUnit(actual Unit, expected Unit) bool {
+	if actual.Height() != expected.Height() ||
+		actual.Width() != expected.Width() {
+		return false
+	}
+
 	for i := range expected.Members {
 		if actual.Members[i] != expected.Members[i] {
 			return false
@@ -11,6 +16,18 @@ func equalsUnit(actual Unit, expected Unit) bool {
 
 	if expected.Pivot != actual.Pivot {
 		return false
+	}
+
+	return true
+}
+
+func equalsBoard(actual Board, expected Board) bool {
+	for y := range expected {
+		for x := range expected[y] {
+			if expected[y][x] != actual[y][x] {
+				return false
+			}
+		}
 	}
 
 	return true
@@ -152,5 +169,92 @@ func TestIsRowFull(t *testing.T) {
 
 	if b.IsRowFull(1) {
 		t.Errorf("Expected row not to be full: %v but was.", b[1])
+	}
+}
+
+func TestClearFullRows(t *testing.T) {
+	// bottom row is full
+	b := NewBoard(2, 2, []Cell{
+		Cell{0, 0},
+		Cell{0, 1}, Cell{1, 1}})
+	expected := NewBoard(2, 2, []Cell{Cell{0, 1}})
+	actual := b.ClearFullRows()
+
+	if !equalsBoard(expected, actual) {
+		t.Errorf("Expected cleared board to be: %v, but was: %v",
+			expected, actual)
+	}
+
+	// top row is full
+	b = NewBoard(3, 2, []Cell{
+		Cell{0, 0}, Cell{1, 0},
+		Cell{1, 1},
+		Cell{0, 2}})
+	expected = NewBoard(3, 2, []Cell{
+		Cell{1, 1}, Cell{0, 2}})
+	actual = b.ClearFullRows()
+
+	if !equalsBoard(expected, actual) {
+		t.Errorf("Expected cleared board to be: %v, but was: %v",
+			expected, actual)
+	}
+
+	// two rows are full
+	b = NewBoard(3, 2, []Cell{
+		Cell{0, 0}, Cell{1, 0},
+		Cell{1, 1},
+		Cell{0, 2}, Cell{1, 2}})
+	expected = NewBoard(3, 2, []Cell{Cell{1, 2}})
+	actual = b.ClearFullRows()
+
+	if !equalsBoard(expected, actual) {
+		t.Errorf("Expected cleared board to be: %v, but was: %v",
+			expected, actual)
+	}
+
+	// all rows are full
+	b = NewBoard(3, 2, []Cell{
+		Cell{0, 0}, Cell{1, 0},
+		Cell{0, 1}, Cell{1, 1},
+		Cell{0, 2}, Cell{1, 2}})
+	expected = NewBoard(3, 2, []Cell{})
+	actual = b.ClearFullRows()
+
+	if !equalsBoard(expected, actual) {
+		t.Errorf("Expected cleared board to be: %v, but was: %v",
+			expected, actual)
+	}
+
+	// all cells are empty
+	b = NewBoard(3, 2, []Cell{})
+	expected = NewBoard(3, 2, []Cell{})
+	actual = b.ClearFullRows()
+
+	if !equalsBoard(expected, actual) {
+		t.Errorf("Expected cleared board to be: %v, but was: %v",
+			expected, actual)
+	}
+
+	// all rows are empty
+	b = NewBoard(3, 2, []Cell{Cell{1, 0}, Cell{1, 2}})
+	expected = NewBoard(3, 2, []Cell{Cell{1, 0}, Cell{1, 2}})
+	actual = b.ClearFullRows()
+
+	if !equalsBoard(expected, actual) {
+		t.Errorf("Expected cleared board to be: %v, but was: %v",
+			expected, actual)
+	}
+
+	// some rows are full
+	b = NewBoard(4, 2, []Cell{
+		Cell{0, 0},
+		Cell{0, 2}, Cell{1, 2},
+		Cell{1, 3}})
+	expected = NewBoard(4, 2, []Cell{Cell{0, 1}, Cell{1, 3}})
+	actual = b.ClearFullRows()
+
+	if !equalsBoard(expected, actual) {
+		t.Errorf("Expected cleared board to be: %v, but was: %v",
+			expected, actual)
 	}
 }
