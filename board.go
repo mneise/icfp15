@@ -2,9 +2,10 @@ package main
 
 import "fmt"
 import "math"
+import "encoding/json"
 
 func main() {
-	u := Unit{members: []Cell{Cell{0, 0}}, pivot: Cell{0, 0}}
+	u := Unit{Members: []Cell{Cell{0, 0}}, Pivot: Cell{0, 0}}
 	b := NewBoard(3, 3, []Cell{})
 
 	t := TargetLocation(b, u)
@@ -17,12 +18,12 @@ func main() {
 
 type Board [][]bool
 type Cell struct {
-	x int
-	y int
+	X int
+	Y int
 }
 type Unit struct {
-	members []Cell
-	pivot   Cell
+	Members []Cell
+	Pivot   Cell
 }
 type Command int
 
@@ -52,6 +53,24 @@ func CommandsToMoves(cs []Command) []string {
 	return m
 }
 
+// todo: should we use float64 just cause json
+type Program struct {
+	Id           int
+	Units        []Unit
+	Width        int
+	Height       int
+	Filled       []Cell
+	SourceLength int
+	SourceSeeds  []int
+}
+
+func ReadProgram(data []byte) *Program {
+	p := &Program{}
+	json.Unmarshal(data, &p)
+
+	return p
+}
+
 func NewBoard(rows int, cols int, cells []Cell) Board {
 	b := make([][]bool, rows)
 	for i := range b {
@@ -59,18 +78,18 @@ func NewBoard(rows int, cols int, cells []Cell) Board {
 	}
 
 	for _, c := range cells {
-		b[c.y][c.x] = true
+		b[c.Y][c.X] = true
 	}
 
 	return b
 }
 
 func (u Unit) MoveTo(cell Cell) Unit {
-	unit := Unit{members: make([]Cell, len(u.members)), pivot: cell}
-	for i, member := range u.members {
-		x := cell.x + (member.x - u.pivot.x)
-		y := cell.y + (member.y - u.pivot.y)
-		unit.members[i] = Cell{y: y, x: x}
+	unit := Unit{Members: make([]Cell, len(u.Members)), Pivot: cell}
+	for i, member := range u.Members {
+		x := cell.X + (member.X - u.Pivot.X)
+		y := cell.Y + (member.Y - u.Pivot.Y)
+		unit.Members[i] = Cell{Y: y, X: x}
 	}
 	return unit
 }
@@ -102,10 +121,10 @@ func (b Board) Height() int {
 }
 
 func (c Cell) isValid(b Board) bool {
-	if c.x < 0 ||
-		c.x >= b.Width() ||
-		c.y < 0 ||
-		c.y >= b.Height() ||
+	if c.X < 0 ||
+		c.X >= b.Width() ||
+		c.Y < 0 ||
+		c.Y >= b.Height() ||
 		c.isFull(b) {
 		return false
 	}
@@ -113,11 +132,11 @@ func (c Cell) isValid(b Board) bool {
 }
 
 func (u Unit) isValid(b Board) bool {
-	if !u.pivot.isValid(b) {
+	if !u.Pivot.isValid(b) {
 		return false
 	}
 
-	for _, c := range u.members {
+	for _, c := range u.Members {
 		if !c.isValid(b) {
 			return false
 		}
@@ -127,7 +146,7 @@ func (u Unit) isValid(b Board) bool {
 }
 
 func (c Cell) isFull(b Board) bool {
-	return b[c.y][c.x]
+	return b[c.Y][c.X]
 }
 
 func (b Board) MoveSequence(s Unit, t Unit) []Command {
@@ -137,12 +156,12 @@ func (b Board) MoveSequence(s Unit, t Unit) []Command {
 	// neg - left
 	// pos - right
 	// zero - down
-	direction := t.pivot.x - s.pivot.x
+	direction := t.Pivot.X - s.Pivot.X
 	xSteps := direction
 	if xSteps < 0 {
 		xSteps = -xSteps
 	}
-	ySteps := t.pivot.y - s.pivot.y
+	ySteps := t.Pivot.Y - s.Pivot.Y
 
 	// move left / right
 	for i := 0; i < xSteps; i++ {
@@ -167,12 +186,12 @@ func (b Board) MoveSequence(s Unit, t Unit) []Command {
 }
 
 func (c Cell) ShiftX(offset int) Cell {
-	return Cell{x: c.x + offset, y: c.y}
+	return Cell{X: c.X + offset, Y: c.Y}
 }
 
 func (b Board) StartLocation(u Unit) Unit {
 	offset := (b.Width() - u.Width()) / 2
-	newPivot := u.pivot.ShiftX(offset)
+	newPivot := u.Pivot.ShiftX(offset)
 
 	return u.MoveTo(newPivot)
 }
@@ -181,12 +200,12 @@ func (u Unit) Width() int {
 	minX := math.MaxInt32
 	maxX := -1
 
-	for _, member := range u.members {
-		if minX > member.x {
-			minX = member.x
+	for _, member := range u.Members {
+		if minX > member.X {
+			minX = member.X
 		}
-		if maxX < member.x {
-			maxX = member.x
+		if maxX < member.X {
+			maxX = member.X
 		}
 	}
 
@@ -197,12 +216,12 @@ func (u Unit) Height() int {
 	minY := math.MaxInt32
 	maxY := -1
 
-	for _, member := range u.members {
-		if minY > member.y {
-			minY = member.y
+	for _, member := range u.Members {
+		if minY > member.Y {
+			minY = member.Y
 		}
-		if maxY < member.y {
-			maxY = member.y
+		if maxY < member.Y {
+			maxY = member.Y
 		}
 	}
 

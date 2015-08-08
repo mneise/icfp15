@@ -4,8 +4,8 @@ import "testing"
 
 func TestMoveToLowerRight(t *testing.T) {
 	b := NewBoard(2, 3, []Cell{})
-	atom := Unit{members: []Cell{Cell{x: 1, y: 0}}, pivot: Cell{x: 1, y: 0}}
-	target := Unit{members: []Cell{Cell{x: 2, y: 1}}, pivot: Cell{x: 2, y: 1}}
+	atom := Unit{Members: []Cell{Cell{X: 1, Y: 0}}, Pivot: Cell{X: 1, Y: 0}}
+	target := Unit{Members: []Cell{Cell{X: 2, Y: 1}}, Pivot: Cell{X: 2, Y: 1}}
 
 	actual := b.MoveSequence(atom, target)
 	expected := []Command{E, SE}
@@ -24,8 +24,8 @@ func TestMoveToLowerRight(t *testing.T) {
 
 func TestMoveToLowerLeft(t *testing.T) {
 	b := NewBoard(2, 3, []Cell{})
-	atom := Unit{members: []Cell{Cell{x: 1, y: 0}}, pivot: Cell{x: 1, y: 0}}
-	target := Unit{members: []Cell{Cell{x: 0, y: 1}}, pivot: Cell{x: 0, y: 1}}
+	atom := Unit{Members: []Cell{Cell{X: 1, Y: 0}}, Pivot: Cell{X: 1, Y: 0}}
+	target := Unit{Members: []Cell{Cell{X: 0, Y: 1}}, Pivot: Cell{X: 0, Y: 1}}
 
 	actual := b.MoveSequence(atom, target)
 	expected := []Command{W, SE}
@@ -44,8 +44,8 @@ func TestMoveToLowerLeft(t *testing.T) {
 
 func TestMoveFurtherToLowerLeft(t *testing.T) {
 	b := NewBoard(5, 3, []Cell{})
-	atom := Unit{members: []Cell{Cell{x: 1, y: 0}}, pivot: Cell{x: 1, y: 0}}
-	target := Unit{members: []Cell{Cell{x: 0, y: 4}}, pivot: Cell{x: 0, y: 4}}
+	atom := Unit{Members: []Cell{Cell{X: 1, Y: 0}}, Pivot: Cell{X: 1, Y: 0}}
+	target := Unit{Members: []Cell{Cell{X: 0, Y: 4}}, Pivot: Cell{X: 0, Y: 4}}
 
 	actual := b.MoveSequence(atom, target)
 	expected := []Command{W, SE, SW, SE, SW}
@@ -68,11 +68,11 @@ func TestUnitWidth(t *testing.T) {
 		expected int
 	}{
 		{
-			atom:     Unit{members: []Cell{Cell{0, 0}}, pivot: Cell{0, 0}},
+			atom:     Unit{Members: []Cell{Cell{0, 0}}, Pivot: Cell{0, 0}},
 			expected: 1,
 		},
 		{
-			atom:     Unit{members: []Cell{Cell{0, 0}, Cell{2, 0}}, pivot: Cell{1, 0}},
+			atom:     Unit{Members: []Cell{Cell{0, 0}, Cell{2, 0}}, Pivot: Cell{1, 0}},
 			expected: 3,
 		},
 	}
@@ -93,11 +93,11 @@ func TestUnitHeight(t *testing.T) {
 		expected int
 	}{
 		{
-			atom:     Unit{members: []Cell{Cell{0, 0}}, pivot: Cell{0, 0}},
+			atom:     Unit{Members: []Cell{Cell{0, 0}}, Pivot: Cell{0, 0}},
 			expected: 1,
 		},
 		{
-			atom:     Unit{members: []Cell{Cell{0, 0}, Cell{2, 2}}, pivot: Cell{1, 1}},
+			atom:     Unit{Members: []Cell{Cell{0, 0}, Cell{2, 2}}, Pivot: Cell{1, 1}},
 			expected: 3,
 		},
 	}
@@ -120,16 +120,16 @@ func TestStartLocation(t *testing.T) {
 	}{
 		{
 			board:    NewBoard(2, 2, []Cell{}),
-			atom:     Unit{members: []Cell{Cell{0, 0}}, pivot: Cell{0, 0}},
-			expected: Unit{members: []Cell{Cell{0, 0}}, pivot: Cell{0, 0}},
+			atom:     Unit{Members: []Cell{Cell{0, 0}}, Pivot: Cell{0, 0}},
+			expected: Unit{Members: []Cell{Cell{0, 0}}, Pivot: Cell{0, 0}},
 		},
 		{
 			board:    NewBoard(2, 3, []Cell{}),
-			atom:     Unit{members: []Cell{Cell{0, 0}}, pivot: Cell{0, 0}},
-			expected: Unit{members: []Cell{Cell{1, 0}}, pivot: Cell{1, 0}},
+			atom:     Unit{Members: []Cell{Cell{0, 0}}, Pivot: Cell{0, 0}},
+			expected: Unit{Members: []Cell{Cell{1, 0}}, Pivot: Cell{1, 0}},
 		},
 		// {
-		// 	atom:     Unit{members: []Cell{Cell{0, 0}, Cell{2, 2}}, pivot: Cell{1, 1}},
+		// 	atom:     Unit{Members: []Cell{Cell{0, 0}, Cell{2, 2}}, Pivot: Cell{1, 1}},
 		// 	expected: 3,
 		// },
 	}
@@ -137,16 +137,37 @@ func TestStartLocation(t *testing.T) {
 	for _, data := range atoms {
 		actual := data.board.StartLocation(data.atom)
 
-		if len(actual.members) != len(data.expected.members) {
-			t.Errorf("Not the same number of members: %v expected %v", actual, data.expected)
+		if len(actual.Members) != len(data.expected.Members) {
+			t.Errorf("Not the same number of Members: %v expected %v", actual, data.expected)
 			return
 		}
 
-		for i, member := range data.expected.members {
-			if actual.members[i] != member {
+		for i, member := range data.expected.Members {
+			if actual.Members[i] != member {
 				t.Errorf("Failed identify height: %v expected %v", actual, data.expected)
 			}
 		}
+	}
+
+}
+
+func TestReadProgram(t *testing.T) {
+	sample := `{"id": 23, "units": [], "width": 5, "height": 5, "filled": [], "sourceLength": 2, "sourceSeeds": []}`
+	actual := ReadProgram([]byte(sample))
+	if actual.Id != 23 || actual.Width != 5 || actual.Height != 5 || actual.SourceLength != 2 {
+		t.Errorf("Failed to read program got: %v", actual)
+	}
+
+	sample = `{"id": 21, "units": [], "width": 10, "height": 5, "filled": [], "sourceLength": 2, "sourceSeeds": []}`
+	actual = ReadProgram([]byte(sample))
+	if actual.Id != 21 || actual.Width != 10 || actual.Height != 5 || actual.SourceLength != 2 {
+		t.Errorf("Failed to read program got: %v", actual)
+	}
+
+	sample = `{"id": 21, "units": [{"members": [{"x": 1, "y": 1}], "pivot": {"x": 1, "y": 1}}], "width": 10, "height": 5, "filled": [{"x": 1, "y": 2}], "sourceLength": 2, "sourceSeeds": []}`
+	actual = ReadProgram([]byte(sample))
+	if len(actual.Units) != 1 || len(actual.Units[0].Members) != 1 || len(actual.Filled) != 1 {
+		t.Errorf("Failed to read program got: %v", actual)
 	}
 
 }
