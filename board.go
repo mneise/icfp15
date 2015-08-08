@@ -10,8 +10,8 @@ func main() {
 
 type Board [][]bool
 type Cell struct {
-	row int
-	col int
+	y int
+	x int
 }
 type Unit struct {
 	members []Cell
@@ -36,7 +36,7 @@ func NewBoard(rows int, cols int, cells []Cell) Board {
 	}
 
 	for _, c := range cells {
-		b[c.row][c.col] = true
+		b[c.y][c.x] = true
 	}
 
 	return b
@@ -65,11 +65,11 @@ func (u Unit) Width() int {
 	maxX := -1
 
 	for _, member := range u.members {
-		if minX > member.col {
-			minX = member.col
+		if minX > member.x {
+			minX = member.x
 		}
-		if maxX < member.col {
-			maxX = member.col
+		if maxX < member.x {
+			maxX = member.x
 		}
 	}
 
@@ -81,11 +81,11 @@ func (u Unit) Height() int {
 	maxY := -1
 
 	for _, member := range u.members {
-		if minY > member.row {
-			minY = member.row
+		if minY > member.y {
+			minY = member.y
 		}
-		if maxY < member.row {
-			maxY = member.row
+		if maxY < member.y {
+			maxY = member.y
 		}
 	}
 
