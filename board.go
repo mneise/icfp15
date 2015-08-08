@@ -41,11 +41,11 @@ func NewBoard(rows int, cols int, cells []Cell) Board {
 	return b
 }
 
-func UnitRelativeToCell(unit Unit, cell Cell) Unit {
-	newUnit := Unit{members: make([]Cell, len(unit.members)), pivot: cell}
-	for i, member := range unit.members {
-		newX := cell.x + (member.x - unit.pivot.x)
-		newY := cell.y + (member.y - unit.pivot.y)
+func (u Unit) MoveTo(cell Cell) Unit {
+	newUnit := Unit{members: make([]Cell, len(u.members)), pivot: cell}
+	for i, member := range u.members {
+		newX := cell.x + (member.x - u.pivot.x)
+		newY := cell.y + (member.y - u.pivot.y)
 		newUnit.members[i] = Cell{y: newY, x: newX}
 	}
 	return newUnit
@@ -94,7 +94,7 @@ func (b Board) StartLocation(u Unit) Unit {
 	offset := (b.Width() - u.Width()) / 2
 	newPivot := u.pivot.ShiftX(offset)
 
-	return UnitRelativeToCell(u, newPivot)
+	return u.MoveTo(newPivot)
 }
 
 func (u Unit) Width() int {
