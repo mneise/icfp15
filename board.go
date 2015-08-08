@@ -216,16 +216,15 @@ func (b Board) Height() int {
 }
 
 func (c Cell) isValid(b Board) bool {
-	if c.X < 0 ||
-		c.X >= b.Width() ||
-		c.Y < 0 ||
-		c.Y >= b.Height() ||
-		c.isFull(b) {
-		return false
-	}
-	return true
+	return c.X >= 0 &&
+		c.X < b.Width() &&
+		c.Y >= 0 &&
+		c.Y < b.Height() &&
+		!c.isFull(b)
 }
 
+// A unit is in a valid location if all of its cells are on empty board
+// cells. Note that a unit's pivot point need not be on a board cell.
 func (u Unit) isValid(b Board) bool {
 	for _, c := range u.Members {
 		if !c.isValid(b) {
