@@ -1,6 +1,7 @@
 package main
 
 import "fmt"
+import "math"
 
 func main() {
 	cs := []Cell{Cell{0, 0}, Cell{1, 1}}
@@ -46,5 +47,31 @@ func TargetLocation(board Board, unit Unit) BoardUnit {
 }
 
 func MoveToTarget(board Board, unit Unit, target BoardUnit) []Command {
+
+	// get start location
+
+	// move left / right
+
+	// move down
+
 	return []Command{E, SE}
+}
+
+// func StartLocation(b Board, u Unit) BoardUnit {
+// }
+
+func (u Unit) Width() int {
+	minX := math.MaxInt32
+	maxX := -1
+
+	for _, member := range u.members {
+		if minX > member.col {
+			minX = member.col
+		}
+		if maxX < member.col {
+			maxX = member.col
+		}
+	}
+
+	return 1 + maxX - minX
 }
