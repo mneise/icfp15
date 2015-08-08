@@ -311,7 +311,6 @@ func moves(xd, yd int) []Move {
 	return []Move{}
 }
 
-// TODO: never EW or WE
 func (b Board) MoveSequence(s Unit, t Unit) []Move {
 	// fmt.Printf("move from %v to %v\n", s.Pivot, t.Pivot)
 	mu := s

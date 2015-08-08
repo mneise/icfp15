@@ -42,6 +42,26 @@ func TestMoveToLowerRightWithObstacle(t *testing.T) {
 	}
 }
 
+func TestNoSequencePossible(t *testing.T) {
+	b := NewBoard(3, 2, []Cell{Cell{X: 0, Y: 1}, Cell{X: 1, Y: 1}})
+	atom := Unit{Members: []Cell{Cell{X: 0, Y: 0}}, Pivot: Cell{X: 0, Y: 0}}
+	target := Unit{Members: []Cell{Cell{X: 0, Y: 2}}, Pivot: Cell{X: 0, Y: 2}}
+
+	actual := b.MoveSequence(atom, target)
+	expected := []Move{}
+
+	if len(actual) != len(expected) {
+		t.Errorf("Not the same amount of moves: %v expected %v", actual, expected)
+		return
+	}
+
+	for i := range expected {
+		if actual[i] != expected[i] {
+			t.Errorf("Failed to move to lower right, got moves: %v expected %v", actual, expected)
+		}
+	}
+}
+
 func TestMoveToLowerLeft(t *testing.T) {
 	b := NewBoard(2, 3, []Cell{})
 	atom := Unit{Members: []Cell{Cell{X: 1, Y: 0}}, Pivot: Cell{X: 1, Y: 0}}
