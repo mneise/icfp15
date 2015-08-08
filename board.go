@@ -227,10 +227,6 @@ func (c Cell) isValid(b Board) bool {
 }
 
 func (u Unit) isValid(b Board) bool {
-	if !u.Pivot.isValid(b) {
-		return false
-	}
-
 	for _, c := range u.Members {
 		if !c.isValid(b) {
 			return false
