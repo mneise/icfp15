@@ -14,7 +14,7 @@ func main() {
 	b := NewBoard(params.Program.Height, params.Program.Width, params.Program.Filled)
 
 	// is := CalcUnitIndexes
-	for _, seed := range params.Program.SourceSeeds {
+	for i, seed := range params.Program.SourceSeeds {
 
 		rs := CalcRandom(seed, params.Program.SourceLength)
 		is := CalcUnitIndexes(rs, len(params.Program.Units))
@@ -29,6 +29,7 @@ func main() {
 				solution = solution + c
 			}
 			b = b.FillCells(t.Members)
+			b = b.ClearFullRows()
 		}
 
 		out := Output{
@@ -38,7 +39,7 @@ func main() {
 			Solution:  solution,
 		}
 
-		outs = append(outs, out)
+		outs[i] = out
 		solution = ""
 	}
 
