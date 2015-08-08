@@ -227,3 +227,31 @@ func (u Unit) Height() int {
 
 	return 1 + maxY - minY
 }
+
+func CalcRandom(s int, l int) []int {
+
+	rands := make([]int, l)
+	m := 1 << 31
+	a := 1103515245
+	c := 12345
+	x := s
+
+	for i := 0; i < l; i++ {
+		out := (x >> 16) & 0x7fff
+		x = ((a*x + c) % m)
+		if x < 0 {
+			x += 4294967296
+		}
+		rands[i] = out
+	}
+
+	return rands
+}
+
+func CalcUnitIndexes(rands []int, l int) []int {
+	idxs := make([]int, len(rands))
+	for i, rand := range rands {
+		idxs[i] = rand % l
+	}
+	return idxs
+}

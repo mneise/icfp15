@@ -116,3 +116,29 @@ func TestMovesToCommands(t *testing.T) {
 		}
 	}
 }
+
+func TestCalcRandom(t *testing.T) {
+	s := 17
+	l := 10
+	expected := []int{0, 24107, 16552, 12125, 9427, 13152, 21440, 3383, 6873, 16117}
+	actual := CalcRandom(s, l)
+
+	for i := range expected {
+		if expected[i] != actual[i] {
+			t.Errorf("Expected random numbers to be: %v but was: %v", expected, actual)
+		}
+	}
+}
+
+func TestCalcUnitIndexes(t *testing.T) {
+	rands := []int{0, 34, 1000, 3, 76, 93}
+	l := 5
+	expected := []int{0, 4, 0, 3, 1, 3}
+	actual := CalcUnitIndexes(rands, l)
+
+	for i := range expected {
+		if expected[i] != actual[i] {
+			t.Errorf("Expected unit indexes to be: %v but was: %v", expected, actual)
+		}
+	}
+}
