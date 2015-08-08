@@ -9,15 +9,28 @@ import "encoding/json"
 func main() {
 	params := ParseArgs()
 
+	solution := ""
 	b := NewBoard(params.Program.Height, params.Program.Width, params.Program.Filled)
 
 	fmt.Printf("Created board %v\n", b)
+
+	// TODO: order units
+	for _, u := range params.Program.Units {
+		t := TargetLocation(b, u)
+		s := b.StartLocation(u)
+		m := b.MoveSequence(s, t) // TODO: lock in command?
+		cs := MovesToCommands(m)
+		for _, c := range cs {
+			solution = solution + c
+		}
+		// TODO: fill board
+	}
 
 	out := &Output{
 		ProblemId: params.Program.Id,
 		Seed:      2,
 		Tag:       "hippo rules.",
-		Solution:  "Ei!",
+		Solution:  solution,
 	}
 
 	o, err := json.Marshal(out)
