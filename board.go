@@ -75,3 +75,19 @@ func (u Unit) Width() int {
 
 	return 1 + maxX - minX
 }
+
+func (u Unit) Height() int {
+	minY := math.MaxInt32
+	maxY := -1
+
+	for _, member := range u.members {
+		if minY > member.row {
+			minY = member.row
+		}
+		if maxY < member.row {
+			maxY = member.row
+		}
+	}
+
+	return 1 + maxY - minY
+}

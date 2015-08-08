@@ -54,3 +54,28 @@ func TestUnitWidth(t *testing.T) {
 	}
 
 }
+
+func TestUnitHeight(t *testing.T) {
+	atoms := []struct {
+		atom     Unit
+		expected int
+	}{
+		{
+			atom:     Unit{members: []Cell{Cell{0, 0}}, pivot: Cell{0, 0}},
+			expected: 1,
+		},
+		{
+			atom:     Unit{members: []Cell{Cell{0, 0}, Cell{2, 2}}, pivot: Cell{1, 1}},
+			expected: 3,
+		},
+	}
+
+	for _, data := range atoms {
+		actual := data.atom.Height()
+
+		if actual != data.expected {
+			t.Errorf("Failed identify height: %v expected %v", actual, data.expected)
+		}
+	}
+
+}
