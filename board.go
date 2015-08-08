@@ -63,18 +63,6 @@ func (b Board) FillCells(cells []Cell) Board {
 	return nb
 }
 
-func testMain() {
-	u := Unit{Members: []Cell{Cell{0, 0}}, Pivot: Cell{0, 0}}
-	b := NewBoard(3, 3, []Cell{})
-
-	t := TargetLocation(b, u)
-	s := b.StartLocation(u)
-	m := b.MoveSequence(s, t)
-	cs := MovesToCommands(m)
-
-	fmt.Printf("Found moves: %v for board: %v and unit: %v\n", cs, b, u)
-}
-
 type Board [][]bool
 type Cell struct {
 	X int
