@@ -10,30 +10,39 @@ func main() {
 	params := ParseArgs()
 
 	solution := ""
+	outs := make([]Output, len(params.Program.SourceSeeds))
 	b := NewBoard(params.Program.Height, params.Program.Width, params.Program.Filled)
 
-	fmt.Printf("Created board %v\n", b)
+	// is := CalcUnitIndexes
+	for _, seed := range params.Program.SourceSeeds {
 
-	// TODO: order units
-	for _, u := range params.Program.Units {
-		t := TargetLocation(b, u)
-		s := b.StartLocation(u)
-		m := b.MoveSequence(s, t)
-		cs := MovesToCommands(m)
-		for _, c := range cs {
-			solution = solution + c
+		rs := CalcRandom(seed, params.Program.SourceLength)
+		is := CalcUnitIndexes(rs, len(params.Program.Units))
+
+		for _, i := range is {
+			u := params.Program.Units[i]
+			t := TargetLocation(b, u)
+			s := b.StartLocation(u)
+			m := b.MoveSequence(s, t)
+			cs := MovesToCommands(m)
+			for _, c := range cs {
+				solution = solution + c
+			}
+			b = b.FillCells(t.Members)
 		}
-		b = b.FillCells(t.Members)
+
+		out := Output{
+			ProblemId: params.Program.Id,
+			Seed:      seed,
+			Tag:       "hippo rules.",
+			Solution:  solution,
+		}
+
+		outs = append(outs, out)
+		solution = ""
 	}
 
-	out := &Output{
-		ProblemId: params.Program.Id,
-		Seed:      2,
-		Tag:       "hippo rules.",
-		Solution:  solution,
-	}
-
-	o, err := json.Marshal(out)
+	o, err := json.Marshal(&outs)
 	if err != nil {
 		panic(fmt.Sprintf("can't marshal to json: %v", err))
 	}
