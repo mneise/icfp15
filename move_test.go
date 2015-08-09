@@ -506,6 +506,55 @@ func TestPathFindingFailure(t *testing.T) {
 	}
 }
 
+func TestRotateMove(t *testing.T) {
+
+	//  ⬡ ⬡ ⬡ ⬡
+	//   ⬢ · ⬢ ⬡
+	//  ⬡ ⬡ ⬡ ⬡
+
+	u := Unit{Members: []Cell{Cell{0, 1}, Cell{2, 1}}, Pivot: Cell{1, 1}}
+
+	actual := u.Move(RC)
+	expected := Unit{Members: []Cell{Cell{1, 0}, Cell{2, 2}}, Pivot: Cell{1, 1}}
+
+	if !actual.eq(expected) {
+		t.Errorf("incorrect 1st move, got\n%v expected\n%v", actual, expected)
+	}
+
+	//  ⬡ ⬢ ⬡ ⬡
+	//   ⬡ · ⬡ ⬡
+	//  ⬡ ⬡ ⬢ ⬡
+
+	actual = expected.Move(RC)
+	expected = Unit{Members: []Cell{Cell{2, 0}, Cell{1, 2}}, Pivot: Cell{1, 1}}
+
+	if !actual.eq(expected) {
+		t.Errorf("incorrect 2rd move, got\n%v expected\n%v", actual, expected)
+	}
+
+	//  ⬡ ⬡ ⬢ ⬡
+	//   ⬡ · ⬡ ⬡
+	//  ⬡ ⬢ ⬡ ⬡
+
+	actual = expected.Move(RC)
+	expected = Unit{Members: []Cell{Cell{2, 1}, Cell{0, 1}}, Pivot: Cell{1, 1}}
+
+	if !actual.eq(expected) {
+		t.Errorf("incorrect 3rd move, got\n%v expected\n%v", actual, expected)
+	}
+
+	//  ⬡ ⬡ ⬡ ⬡
+	//   ⬢ · ⬢ ⬡
+	//  ⬡ ⬡ ⬡ ⬡
+
+	actual = expected.Move(RCC)
+	expected = Unit{Members: []Cell{Cell{2, 0}, Cell{1, 2}}, Pivot: Cell{1, 1}}
+
+	if !actual.eq(expected) {
+		t.Errorf("incorrect 3rd move, got\n%v expected\n%v", actual, expected)
+	}
+}
+
 func TestRotateMoveWeirdo(t *testing.T) {
 
 	//  · ⬡ ⬢ ⬢
