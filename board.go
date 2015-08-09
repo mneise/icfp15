@@ -66,16 +66,14 @@ func main() {
 			for _, t = range ts {
 				m = b.MoveSequence(s, t)
 				if len(m) > 0 {
-					// fmt.Printf("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n")
-					// logMsg(params, fmt.Sprintf("xxxxxxxxxx found moves %v", m))
-					// xxx := s
-					// for ms, x := range m {
-					// 	if ms < len(m)-1 {
-					// 		xxx = xxx.Move(x)
-					// 		logBoard(params, fmt.Sprintf("move %v step %v", x, ms), b.FillCells(xxx.Members))
-					// 	}
-					// }
-					// fmt.Printf("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\n")
+					logMsg(params, fmt.Sprintf("found moves %v", m))
+					xxx := s
+					for ms, x := range m {
+						if ms < len(m)-1 {
+							xxx = xxx.Move(x)
+							logBoard(params, fmt.Sprintf("move %v step %v", x, ms), b.FillCells(xxx.Members))
+						}
+					}
 					break
 				} else {
 					logMsg(params, fmt.Sprintf("found no moves for target %v", t))
