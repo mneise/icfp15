@@ -21,9 +21,21 @@ func main() {
 
 		for _, i := range is {
 			u := params.Program.Units[i]
-			t := TargetLocation(b, u)
 			s := b.StartLocation(u)
-			m := b.MoveSequence(s, t)
+			ts := TargetLocations(b, u)
+			m := []Move{}
+			t := Unit{}
+			for _, t = range ts {
+				m = b.MoveSequence(s, t)
+				if len(m) > 0 {
+					break
+				}
+			}
+
+			if len(m) == 0 {
+				break
+			}
+
 			cs := MovesToCommands(m)
 			for _, c := range cs {
 				solution = solution + c
@@ -213,18 +225,18 @@ func (u Unit) MoveTo(cell Cell) Unit {
 	return unit
 }
 
-func TargetLocation(b Board, u Unit) Unit {
-	t := Unit{}
+func TargetLocations(b Board, u Unit) []Unit {
+	ts := []Unit{}
 	for y := range b {
 		for x := range b[y] {
-			tmp := u.MoveTo(Cell{x, y})
-			if tmp.isValid(b) {
-				t = tmp
+			t := u.MoveTo(Cell{x, y})
+			if t.isValid(b) {
+				ts = append([]Unit{t}, ts...)
 			}
 		}
 	}
 
-	return t
+	return ts
 }
 
 func (b Board) Width() int {

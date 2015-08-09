@@ -35,47 +35,97 @@ func equalsBoard(actual Board, expected Board) bool {
 
 func TestFindTargetLowerRight(t *testing.T) {
 	board := NewBoard(2, 2, []Cell{Cell{1, 0}})
-	unit := Unit{Members: []Cell{Cell{0, 0}}, Pivot: Cell{0, 0}}
-	actual := TargetLocation(board, unit)
-	expected := Unit{Members: []Cell{Cell{1, 1}}, Pivot: Cell{1, 1}}
+	unit := Unit{[]Cell{Cell{0, 0}}, Cell{0, 0}}
+	actual := TargetLocations(board, unit)
+	expected := []Unit{
+		Unit{[]Cell{Cell{1, 1}}, Cell{1, 1}},
+		Unit{[]Cell{Cell{0, 1}}, Cell{0, 1}},
+		Unit{[]Cell{Cell{0, 0}}, Cell{0, 0}}}
 
-	if !equalsUnit(actual, expected) {
+	if len(expected) != len(actual) {
 		t.Errorf("Failed to find target, got unit: %v expected %v", actual, expected)
+	}
+
+	for i := range expected {
+		if !equalsUnit(actual[i], expected[i]) {
+			t.Errorf("Failed to find target, got unit: %v expected %v", actual, expected)
+		}
 	}
 
 	board = NewBoard(2, 2, []Cell{
 		Cell{0, 0}, Cell{1, 0},
 		Cell{1, 1}})
-	unit = Unit{Members: []Cell{Cell{0, 0}}, Pivot: Cell{0, 0}}
-	actual = TargetLocation(board, unit)
-	expected = Unit{Members: []Cell{Cell{0, 1}}, Pivot: Cell{0, 1}}
+	unit = Unit{[]Cell{Cell{0, 0}}, Cell{0, 0}}
+	actual = TargetLocations(board, unit)
+	expected = []Unit{Unit{[]Cell{Cell{0, 1}}, Cell{0, 1}}}
 
-	if !equalsUnit(actual, expected) {
+	if len(expected) != len(actual) {
 		t.Errorf("Failed to find target, got unit: %v expected %v", actual, expected)
+	}
+
+	for i := range expected {
+		if !equalsUnit(actual[i], expected[i]) {
+			t.Errorf("Failed to find target, got unit: %v expected %v", actual, expected)
+		}
 	}
 
 	board = NewBoard(3, 3, []Cell{
 		Cell{0, 0}, Cell{1, 0}, Cell{2, 0},
 		Cell{0, 1}, Cell{2, 1},
 		Cell{0, 2}, Cell{1, 2}, Cell{2, 2}})
-	unit = Unit{Members: []Cell{Cell{0, 0}}, Pivot: Cell{0, 0}}
-	actual = TargetLocation(board, unit)
-	expected = Unit{Members: []Cell{Cell{1, 1}}, Pivot: Cell{1, 1}}
+	unit = Unit{[]Cell{Cell{0, 0}}, Cell{0, 0}}
+	actual = TargetLocations(board, unit)
+	expected = []Unit{
+		Unit{[]Cell{Cell{1, 1}}, Cell{1, 1}}}
 
-	if !equalsUnit(actual, expected) {
+	if len(expected) != len(actual) {
 		t.Errorf("Failed to find target, got unit: %v expected %v", actual, expected)
+	}
+
+	for i := range expected {
+		if !equalsUnit(actual[i], expected[i]) {
+			t.Errorf("Failed to find target, got unit: %v expected %v", actual, expected)
+		}
 	}
 
 	board = NewBoard(3, 3, []Cell{
 		Cell{0, 0}, Cell{1, 0}, Cell{2, 0},
 		Cell{0, 1},
 		Cell{0, 2}, Cell{1, 2}})
-	unit = Unit{Members: []Cell{Cell{0, 0}, Cell{1, 0}}, Pivot: Cell{0, 0}}
-	actual = TargetLocation(board, unit)
-	expected = Unit{Members: []Cell{Cell{1, 1}, Cell{2, 1}}, Pivot: Cell{1, 1}}
+	unit = Unit{[]Cell{Cell{0, 0}, Cell{1, 0}}, Cell{0, 0}}
+	actual = TargetLocations(board, unit)
+	expected = []Unit{
+		Unit{[]Cell{Cell{1, 1}, Cell{2, 1}}, Cell{1, 1}}}
 
-	if !equalsUnit(actual, expected) {
+	if len(expected) != len(actual) {
 		t.Errorf("Failed to find target, got unit: %v expected %v", actual, expected)
+	}
+
+	for i := range expected {
+		if !equalsUnit(actual[i], expected[i]) {
+			t.Errorf("Failed to find target, got unit: %v expected %v", actual, expected)
+		}
+	}
+
+	board = NewBoard(3, 3, []Cell{
+		Cell{0, 0}, Cell{1, 0}, Cell{2, 0},
+		Cell{0, 1},
+		Cell{0, 2}, Cell{1, 2}})
+	unit = Unit{[]Cell{Cell{0, 0}}, Cell{0, 0}}
+	actual = TargetLocations(board, unit)
+	expected = []Unit{
+		Unit{[]Cell{Cell{2, 2}}, Cell{2, 2}},
+		Unit{[]Cell{Cell{2, 1}}, Cell{2, 1}},
+		Unit{[]Cell{Cell{1, 1}}, Cell{1, 1}}}
+
+	if len(expected) != len(actual) {
+		t.Errorf("Failed to find target, got unit: %v expected %v", actual, expected)
+	}
+
+	for i := range expected {
+		if !equalsUnit(actual[i], expected[i]) {
+			t.Errorf("Failed to find target, got unit: %v expected %v", actual, expected)
+		}
 	}
 }
 
