@@ -154,6 +154,7 @@ type Params struct {
 	MemoryLimitMegaBytes int
 	Cores                int
 	PhraseOfPower        string
+	Debug                bool
 }
 
 func ParseArgs() Params {
@@ -162,19 +163,21 @@ func ParseArgs() Params {
 	var m = flag.Int("m", 0, "memory limit in megabytes")
 	var c = flag.Int("c", 0, "number of cores available")
 	var p = flag.String("p", "Ei!", "phrase of power")
+	var d = flag.Bool("d", false, "print debug output")
 
 	flag.Parse()
 
-	d, err := ioutil.ReadFile(*f)
+	in, err := ioutil.ReadFile(*f)
 	if err != nil {
 		panic(fmt.Sprintf("can't open file %v", f))
 	}
 	return Params{
-		Program:              *ReadProgram(d),
+		Program:              *ReadProgram(in),
 		TimeLimitSeconds:     *t,
 		MemoryLimitMegaBytes: *m,
 		Cores:                *c,
 		PhraseOfPower:        *p,
+		Debug:                *d,
 	}
 }
 
