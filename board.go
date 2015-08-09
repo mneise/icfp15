@@ -23,6 +23,9 @@ func main() {
 		for _, i := range is {
 			u := params.Program.Units[i]
 			s := b.StartLocation(u)
+			if !s.isValid(b) {
+				break
+			}
 			ts := TargetLocations(b, u)
 			m := []Move{}
 			t := Unit{}
