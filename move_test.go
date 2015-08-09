@@ -460,6 +460,51 @@ func TestMoveTriplet(t *testing.T) {
 	}
 }
 
+// ⬡ ⬡ ⬡ ⬡ ⬢ ⬢ ⬡ ⬡ ⬡ ⬡
+//  ⬢ ⬡ ⬢ ⬡ ⬢ ⬡ ⬢ ⬡ ⬢ ⬡
+// ⬡ ⬡ ⬡ ⬡ ⬡ ⬡ ⬡ ⬡ ⬡ ⬡
+//  ⬡ ⬡ ⬡ ⬡ ⬡ ⬡ ⬡ ⬡ ⬡ ⬡
+// ⬡ ⬡ ⬡ ⬡ ⬡ ⬡ ⬡ ⬡ ⬡ ⬡
+//  ⬡ ⬢ ⬢ ⬢ ⬢ ⬢ ⬢ ⬢ ⬢ ⬡
+// ⬡ ⬡ ⬡ ⬡ ⬡ ⬡ ⬡ ⬡ ⬡ ⬡
+
+// func TestPathFindingFailureP10(t *testing.T) {
+
+// 	b := NewBoard(
+// 		7,
+// 		10,
+// 		[]Cell{
+// 			Cell{0, 1},
+// 			Cell{2, 1},
+// 			Cell{4, 1},
+// 			Cell{6, 1},
+// 			Cell{8, 1},
+// 			Cell{1, 5},
+// 			Cell{2, 5},
+// 			Cell{3, 5},
+// 			Cell{4, 5},
+// 			Cell{5, 5},
+// 			Cell{6, 5},
+// 			Cell{7, 5},
+// 			Cell{8, 5},
+// 		},
+// 	)
+
+// 	sl := Unit{Members: []Cell{Cell{2, 0}, Cell{3, 0}}, Pivot: Cell{0, 0}}
+// 	fmt.Printf("%v\n", b.FillCells(sl.Members))
+// 	tl := Unit{Members: []Cell{Cell{8, 6}, Cell{9, 6}}, Pivot: Cell{6, 6}}
+
+// 	ms := b.MoveSequence(sl, tl)
+
+// 	fmt.Printf("got moves: %v\n", ms)
+// 	// expected := []Move{E, E, E, SE, W, SE, SE, W, SE, SW, SE, SE}
+// 	// for i, em := range expected {
+// 	// 	if ms[i] != em {
+// 	// 		t.Errorf("did not find proper path. got %v expected %v", ms, expected)
+// 	// 	}
+// 	// }
+// }
+
 func TestPathFindingFailure(t *testing.T) {
 
 	b := NewBoard(

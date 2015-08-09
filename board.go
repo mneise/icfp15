@@ -71,12 +71,12 @@ func main() {
 					for ms, x := range m {
 						if ms < len(m)-1 {
 							xxx = xxx.Move(x)
-							logBoard(params, fmt.Sprintf("move %v step %v", x, ms), b.FillCells(xxx.Members))
+							// logBoard(params, fmt.Sprintf("move %v step %v", x, ms), b.FillCells(xxx.Members))
 						}
 					}
 					break
 				} else {
-					logMsg(params, fmt.Sprintf("found no moves for target %v", t))
+					// logMsg(params, fmt.Sprintf("found no moves for target %v", t))
 				}
 			}
 
@@ -568,11 +568,11 @@ func moves(xd, yd int) []Move {
 	case xd == 0 && yd > 0: // down
 		return []Move{SE, SW, E, W, RC, RCC}
 	case xd > 0 && yd > 0: // right down
-		return []Move{E, SE, SW, W, RC, RCC}
+		return []Move{E, SE, SW, W}
 	case xd < 0 && yd == 0: // left
-		return []Move{W, RC, RCC}
+		return []Move{W}
 	case xd > 0 && yd == 0: // right
-		return []Move{E, RC, RCC}
+		return []Move{E}
 	case xd == 0 && yd == 0: // done
 	case yd < 0: // cant move up
 	}
@@ -580,12 +580,122 @@ func moves(xd, yd int) []Move {
 	return []Move{}
 }
 
+type MoveWithBacktrack struct {
+	move    Move
+	options []Move
+}
+
+func NewMoveWithBacktrack(xd, yd int) MoveWithBacktrack {
+	return MoveWithBacktrack{
+		move:    W,
+		options: moves(xd, yd), // TODO should bias this
+	}
+}
+
 func (b Board) MoveSequence(s Unit, t Unit) []Move {
-	mu := s
+	// msb := []MoveWithBacktrack{}
+	// pls := []Unit{s}
+	// seen := func(u Unit) bool {
+	// 	for _, pl := range pls {
+	// 		if u.eq(pl) {
+	// 			return true
+	// 		}
+	// 	}
+	// 	return false
+	// }
+
+	// movesString := func() string {
+	// 	r := ""
+	// 	for _, mb := range msb {
+	// 		r += mb.move.String() + " "
+	// 	}
+	// 	return r
+	// }
+
+	// 	xd, yd := direction(s.Pivot, t.Pivot)
+
+	// 	count := 0
+
+	// 	mu := s
+	// 	next := NewMoveWithBacktrack(xd, yd)
+	// 	m := next.move
+	// 	tu := mu.Move(m)
+
+	// XXX:
+	// 	for !mu.eq(t) {
+	// 		count++
+	// 		if count > 100 {
+	// 			// fmt.Printf("failing with upper limit 10k\n")
+	// 			break XXX
+	// 		}
+
+	// 		// found one!
+	// 		if !seen(tu) && tu.isValid(b) {
+	// 			// fmt.Printf("found valid move m %v adding it to msb %v.\n", m, movesString())
+	// 			// fmt.Printf("found move %v, board:\n%v\n", m, b.FillCells(tu.Members))
+
+	// 			mu = tu
+	// 			msb = append(msb, next)
+	// 			pls = append(pls, mu)
+	// 			xd, yd = direction(mu.Pivot, t.Pivot)
+	// 			next = NewMoveWithBacktrack(xd, yd)
+	// 			m = next.move
+	// 			tu = mu.Move(m)
+
+	// 			continue XXX
+	// 		}
+
+	// 		// try next avail command
+	// 		if len(next.options) > 0 {
+	// 			// fmt.Printf("move m %v is invalid (unseen %v, valid %v), trying next %v.\n",
+	// 			// 	m,
+	// 			// 	!seen(tu),
+	// 			// 	tu.isValid(b),
+	// 			// 	next.move,
+	// 			// )
+	// 			next.move = next.options[0]
+	// 			next.options = next.options[1:]
+	// 			m = next.move
+	// 			tu = mu.Move(m)
+	// 			continue XXX
+	// 		}
+
+	// 		for len(msb) > 1 {
+	// 			// fmt.Printf("backtracking.\n")
+	// 			// fmt.Printf("len(msb) %v len(pls) %v.\n", len(msb), len(pls))
+	// 			mu = pls[len(pls)-2]
+	// 			pls = pls[:len(pls)-1]
+	// 			next = msb[len(pls)-2]
+	// 			msb = msb[:len(msb)-1]
+
+	// 			if len(next.options) > 0 {
+	// 				// fmt.Printf("restored board:\n%v\n", b.FillCells(mu.Members))
+
+	// 				next.move = next.options[0]
+	// 				next.options = next.options[1:]
+	// 				m = next.move
+	// 				tu = mu.Move(m)
+	// 				continue XXX
+	// 			}
+
+	// 		}
+
+	// 		// fmt.Printf("no options left\n")
+	// 		break XXX
+	// 	}
+
+	// 	ms := []Move{}
+	// 	for _, m := range msb {
+	// 		ms = append(ms, m.move)
+	// 	}
+	// 	// fmt.Printf("new moves: %v\n", ms)
+
+	///////////////////////////////////////////////////////////////////
 	mp := s.Pivot
 	xd, yd := direction(s.Pivot, t.Pivot)
 	ms := []Move{}
 	ls := []Unit{s}
+	mu := s
 
 	for true {
 		before := len(ms)
@@ -606,6 +716,8 @@ func (b Board) MoveSequence(s Unit, t Unit) []Move {
 			}
 
 			if tu.isValid(b) { // found valid one,yay!
+
+				// fmt.Printf("found move %v, board:\n%v\n", m, b.FillCells(tu.Members))
 				mu = tu
 				mp = tu.Pivot
 				xd, yd = direction(mp, t.Pivot)
@@ -633,6 +745,7 @@ func (b Board) MoveSequence(s Unit, t Unit) []Move {
 			return append(ms, W)
 		}
 	}
+	// fmt.Printf("found moves, but not on target: %v\n", ms)
 
 	return []Move{} // can't find a legal way
 }
