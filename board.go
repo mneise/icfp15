@@ -24,14 +24,20 @@ func main() {
 
 	solution := ""
 	outs := make([]Output, len(params.Program.SourceSeeds))
+	var cleared int
 	b := NewBoard(params.Program.Height, params.Program.Width, params.Program.Filled)
 
 	for i, seed := range params.Program.SourceSeeds {
 
 		rs := CalcRandom(seed, params.Program.SourceLength)
 		is := CalcUnitIndexes(rs, len(params.Program.Units))
+		count := 0
 
 		for _, i := range is {
+			count++
+			// if count > 18 {
+			// 	break
+			// }
 
 			u := params.Program.Units[i]
 			s := b.StartLocation(u)
@@ -41,7 +47,7 @@ func main() {
 			}
 
 			logMsg(params, "======================================================")
-			logBoard(params, fmt.Sprintf("trying to place unit %v on board", u), b.FillCells(s.Members))
+			logBoard(params, fmt.Sprintf("trying to place unit %v (%vth) on board", u, count), b.FillCells(s.Members))
 
 			ts := TargetLocations(b, u)
 			m := []Move{}
@@ -66,7 +72,7 @@ func main() {
 			}
 			b = b.FillCells(t.Members)
 			logBoard(params, fmt.Sprintf("unit %v placed on board", i), b)
-			b, cleared := b.ClearFullRows()
+			b, cleared = b.ClearFullRows()
 			if cleared > 0 {
 				logBoard(params, fmt.Sprintf("cleared full rows"), b)
 			}
