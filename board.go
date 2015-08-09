@@ -56,8 +56,11 @@ func main() {
 			}
 
 			if len(m) == 0 {
+				logMsg(params, fmt.Sprintf("found no moves! GAME OVER BABY"))
 				break
 			}
+
+			logMsg(params, fmt.Sprintf("found moves: %v", m))
 
 			cs := MovesToCommands(m)
 			for _, c := range cs {
