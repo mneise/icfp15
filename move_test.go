@@ -168,6 +168,11 @@ func TestStartLocation(t *testing.T) {
 			atom:     Unit{Members: []Cell{Cell{0, 0}}, Pivot: Cell{0, 0}},
 			expected: Unit{Members: []Cell{Cell{1, 0}}, Pivot: Cell{1, 0}},
 		},
+		{
+			board:    NewBoard(2, 5, []Cell{}),
+			atom:     Unit{Members: []Cell{Cell{0, 1}, Cell{1, 1}}, Pivot: Cell{0, 0}},
+			expected: Unit{Members: []Cell{Cell{1, 0}, Cell{2, 0}}, Pivot: Cell{1, -1}},
+		},
 	}
 
 	for _, data := range atoms {
