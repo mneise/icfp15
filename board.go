@@ -66,8 +66,10 @@ func main() {
 			}
 			b = b.FillCells(t.Members)
 			logBoard(params, fmt.Sprintf("unit %v placed on board", i), b)
-			b = b.ClearFullRows()
-			logBoard(params, fmt.Sprintf("cleared full rows"), b)
+			b, cleared := b.ClearFullRows()
+			if cleared > 0 {
+				logBoard(params, fmt.Sprintf("cleared full rows"), b)
+			}
 		}
 
 		out := Output{
@@ -536,11 +538,13 @@ func CalcUnitIndexes(rands []int, l int) []int {
 	return idxs
 }
 
-func (b Board) ClearFullRows() Board {
+func (b Board) ClearFullRows() (Board, int) {
+	var cleared int
 	nb := NewBoard(b.Height(), b.Width(), []Cell{})
 	copy(nb, b)
 	for i := b.Height() - 1; i >= 0; i-- {
 		if nb.IsRowFull(i) {
+			cleared++
 			if i == b.Height()-1 {
 				nb = nb[:i]
 			} else {
@@ -551,5 +555,5 @@ func (b Board) ClearFullRows() Board {
 			i++
 		}
 	}
-	return nb
+	return nb, cleared
 }

@@ -228,7 +228,7 @@ func TestClearFullRows(t *testing.T) {
 		Cell{0, 0},
 		Cell{0, 1}, Cell{1, 1}})
 	expected := NewBoard(2, 2, []Cell{Cell{0, 1}})
-	actual := b.ClearFullRows()
+	actual, _ := b.ClearFullRows()
 
 	if !equalsBoard(expected, actual) {
 		t.Errorf("Expected cleared board to be: %v, but was: %v",
@@ -242,7 +242,7 @@ func TestClearFullRows(t *testing.T) {
 		Cell{0, 2}})
 	expected = NewBoard(3, 2, []Cell{
 		Cell{1, 1}, Cell{0, 2}})
-	actual = b.ClearFullRows()
+	actual, _ = b.ClearFullRows()
 
 	if !equalsBoard(expected, actual) {
 		t.Errorf("Expected cleared board to be: %v, but was: %v",
@@ -255,7 +255,7 @@ func TestClearFullRows(t *testing.T) {
 		Cell{1, 1},
 		Cell{0, 2}, Cell{1, 2}})
 	expected = NewBoard(3, 2, []Cell{Cell{1, 2}})
-	actual = b.ClearFullRows()
+	actual, _ = b.ClearFullRows()
 
 	if !equalsBoard(expected, actual) {
 		t.Errorf("Expected cleared board to be: %v, but was: %v",
@@ -268,7 +268,7 @@ func TestClearFullRows(t *testing.T) {
 		Cell{0, 1}, Cell{1, 1},
 		Cell{0, 2}, Cell{1, 2}})
 	expected = NewBoard(3, 2, []Cell{})
-	actual = b.ClearFullRows()
+	actual, _ = b.ClearFullRows()
 
 	if !equalsBoard(expected, actual) {
 		t.Errorf("Expected cleared board to be: %v, but was: %v",
@@ -278,7 +278,7 @@ func TestClearFullRows(t *testing.T) {
 	// all cells are empty
 	b = NewBoard(3, 2, []Cell{})
 	expected = NewBoard(3, 2, []Cell{})
-	actual = b.ClearFullRows()
+	actual, _ = b.ClearFullRows()
 
 	if !equalsBoard(expected, actual) {
 		t.Errorf("Expected cleared board to be: %v, but was: %v",
@@ -288,7 +288,7 @@ func TestClearFullRows(t *testing.T) {
 	// all rows are empty
 	b = NewBoard(3, 2, []Cell{Cell{1, 0}, Cell{1, 2}})
 	expected = NewBoard(3, 2, []Cell{Cell{1, 0}, Cell{1, 2}})
-	actual = b.ClearFullRows()
+	actual, _ = b.ClearFullRows()
 
 	if !equalsBoard(expected, actual) {
 		t.Errorf("Expected cleared board to be: %v, but was: %v",
@@ -301,7 +301,7 @@ func TestClearFullRows(t *testing.T) {
 		Cell{0, 2}, Cell{1, 2},
 		Cell{1, 3}})
 	expected = NewBoard(4, 2, []Cell{Cell{0, 1}, Cell{1, 3}})
-	actual = b.ClearFullRows()
+	actual, _ = b.ClearFullRows()
 
 	if !equalsBoard(expected, actual) {
 		t.Errorf("Expected cleared board to be: %v, but was: %v",
