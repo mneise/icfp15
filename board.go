@@ -7,9 +7,15 @@ import "io/ioutil"
 import "math"
 import "encoding/json"
 
-func log(p Params, m string, b Board) {
+func logBoard(p Params, m string, b Board) {
 	if p.Debug {
 		fmt.Printf("%v:\n%v\n", m, b)
+	}
+}
+
+func logMsg(p Params, m string) {
+	if p.Debug {
+		fmt.Printf("%v\n", m)
 	}
 }
 
@@ -26,12 +32,19 @@ func main() {
 		is := CalcUnitIndexes(rs, len(params.Program.Units))
 
 		for _, i := range is {
-			log(params, fmt.Sprintf("trying to place unit %v on board", i), b)
+
 			u := params.Program.Units[i]
 			s := b.StartLocation(u)
+<<<<<<< HEAD
 			if !s.isValid(b) {
 				break
 			}
+=======
+
+			logMsg(params, "======================================================")
+			logBoard(params, fmt.Sprintf("trying to place unit %v on board", i), b.FillCells(s.Members))
+
+>>>>>>> adds debugging print steps
 			ts := TargetLocations(b, u)
 			m := []Move{}
 			t := Unit{}
@@ -51,7 +64,9 @@ func main() {
 				solution = solution + c
 			}
 			b = b.FillCells(t.Members)
+			logBoard(params, fmt.Sprintf("unit %v placed on board", i), b)
 			b = b.ClearFullRows()
+			logBoard(params, fmt.Sprintf("cleared full rows"), b)
 		}
 
 		out := Output{
