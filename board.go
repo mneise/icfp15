@@ -570,7 +570,6 @@ func moves(xd, yd int) []Move {
 }
 
 func (b Board) MoveSequence(s Unit, t Unit) []Move {
-	// fmt.Printf("move from %v to %v\n", s.Pivot, t.Pivot)
 	mu := s
 	mp := s.Pivot
 	xd, yd := direction(s.Pivot, t.Pivot)
@@ -578,18 +577,12 @@ func (b Board) MoveSequence(s Unit, t Unit) []Move {
 
 	for true {
 		before := len(ms)
-		// fmt.Printf("main loop mp %v xd %v yd %v ms %v\n", mp, xd, yd, ms)
-
 		for _, m := range moves(xd, yd) {
 			if len(ms) > 0 &&
 				((m == W && ms[len(ms)-1] == E) || (m == E && ms[len(ms)-1] == W)) {
-				// fmt.Printf("not going backwards ms %v m %v\n", ms, m)
 				continue
 			}
 
-			// fmt.Printf("found move %v\n", m)
-			// try to move pivot / unit
-			// tp := mp.Move(m, )
 			tu := mu.Move(m)
 			if tu.isValid(b) { // found valid one,yay!
 				mu = tu
@@ -598,8 +591,6 @@ func (b Board) MoveSequence(s Unit, t Unit) []Move {
 				ms = append(ms, m)
 				break
 			}
-			// fmt.Printf("move %v is invalid. cannot move %v to %v, trying next.\n", m, mu, tu)
-			// fmt.Printf("move %v is invalid. cannot move %v to %v, trying next.\n", m, mu, tu)
 		}
 
 		if before == len(ms) {
@@ -619,9 +610,6 @@ func (b Board) MoveSequence(s Unit, t Unit) []Move {
 		case !t.Move(W).isValid(b):
 			return append(ms, W)
 		}
-		// if !t.Move(SE).isValid(b) {
-		// 	return append(ms, SE) // lock in move
-		// }
 	}
 
 	return []Move{} // can't find a legal way
