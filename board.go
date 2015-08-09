@@ -23,25 +23,35 @@ func main() {
 	params := ParseArgs()
 
 	solution := ""
-	outs := make([]Output, len(params.Program.SourceSeeds))
 	b := NewBoard(params.Program.Height, params.Program.Width, params.Program.Filled)
+	outs := make([]Output, len(params.Program.SourceSeeds))
+	totalScore := 0
 
 	for i, seed := range params.Program.SourceSeeds {
+
+		moveScores := 0
+		cleared := 0
+		clearedOld := 0
 
 		rs := CalcRandom(seed, params.Program.SourceLength)
 		is := CalcUnitIndexes(rs, len(params.Program.Units))
 
+		count := 0
+
 		for _, i := range is {
+			clearedOld = cleared
+
+			count++
 
 			u := params.Program.Units[i]
 			s := b.StartLocation(u)
 			if !s.isValid(b) {
-				logMsg(params, fmt.Sprintf("couldn't place unit! GAME OVER BABY"))
+				logMsg(params, fmt.Sprintf("couldn't place unit %v %v! GAME OVER BABY", count, u))
 				break
 			}
 
 			logMsg(params, "======================================================")
-			logBoard(params, fmt.Sprintf("trying to place unit %v on board", u), b.FillCells(s.Members))
+			logBoard(params, fmt.Sprintf("trying to place unit %v %v on board", count, u), b.FillCells(s.Members))
 
 			ts := TargetLocations(b, u)
 			m := []Move{}
@@ -70,7 +80,17 @@ func main() {
 			if cleared > 0 {
 				logBoard(params, fmt.Sprintf("cleared full rows"), b)
 			}
+
+			points := len(u.Members) + 100*(1+cleared)*cleared/2
+			lineBonus := 0
+			if clearedOld > 1 {
+				lineBonus = (clearedOld - 1) * points / 10
+			}
+			moveScores += points + lineBonus
 		}
+
+		fmt.Printf("Game score: %v\n", moveScores)
+		totalScore += moveScores
 
 		out := Output{
 			ProblemId: params.Program.Id,
@@ -81,7 +101,10 @@ func main() {
 
 		outs[i] = out
 		solution = ""
+		b = NewBoard(params.Program.Height, params.Program.Width, params.Program.Filled)
 	}
+
+	fmt.Printf("Total score: %v\n", totalScore)
 
 	o, err := json.Marshal(&outs)
 	if err != nil {
