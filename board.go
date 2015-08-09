@@ -22,9 +22,8 @@ func logMsg(p Params, m string) {
 func main() {
 	params := ParseArgs()
 
-	solution := ""
-
 	b := NewBoard(params.Program.Height, params.Program.Width, params.Program.Filled)
+	solution := ""
 	outs := make([]Output, len(params.Program.SourceSeeds))
 	totalScore := 0
 
@@ -42,9 +41,9 @@ func main() {
 			clearedOld = cleared
 
 			count++
-			if count > 18 {
-				break
-			}
+			// if count > 20 { // last: 20-borked
+			// 	break
+			// }
 
 			u := params.Program.Units[i]
 			s := b.StartLocation(u)
@@ -62,7 +61,19 @@ func main() {
 			for _, t = range ts {
 				m = b.MoveSequence(s, t)
 				if len(m) > 0 {
+					// fmt.Printf("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n")
+					// logMsg(params, fmt.Sprintf("xxxxxxxxxx found moves %v", m))
+					// xxx := s
+					// for ms, x := range m {
+					// 	if ms < len(m)-1 {
+					// 		xxx = xxx.Move(x)
+					// 		logBoard(params, fmt.Sprintf("move %v step %v", x, ms), b.FillCells(xxx.Members))
+					// 	}
+					// }
+					// fmt.Printf("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\n")
 					break
+				} else {
+					logMsg(params, fmt.Sprintf("found no moves for target %v", t))
 				}
 			}
 
@@ -304,7 +315,7 @@ func NewBoard(height int, width int, cells []Cell) Board {
 	return b
 }
 
-func (c Cell) Move(m Move, b Board) Cell { // TODO
+func (c Cell) Move(m Move) Cell { // TODO
 	// E: y-1 x+1 z
 	// SE: y-1 x z+1
 	// W: y+1 x-1 z
@@ -342,10 +353,10 @@ func (c Cell) Move(m Move, b Board) Cell { // TODO
 	return nq.cell()
 }
 
-func (u Unit) Move(m Move, b Board) (nu Unit) {
-	nu.Pivot = u.Pivot.Move(m, b)
+func (u Unit) Move(m Move) (nu Unit) {
+	nu.Pivot = u.Pivot.Move(m)
 	for _, x := range u.Members {
-		nu.Members = append(nu.Members, x.Move(m, b))
+		nu.Members = append(nu.Members, x.Move(m))
 	}
 	return nu
 }
@@ -495,8 +506,8 @@ func (b Board) MoveSequence(s Unit, t Unit) []Move {
 
 			// fmt.Printf("found move %v\n", m)
 			// try to move pivot / unit
-			tp := mp.Move(m, b)
-			tu := mu.Move(m, b)
+			tp := mp.Move(m)
+			tu := mu.Move(m)
 			if tp.isValid(b) && tu.isValid(b) { // found valid one,yay!
 				mu = tu
 				mp = tp
@@ -512,7 +523,20 @@ func (b Board) MoveSequence(s Unit, t Unit) []Move {
 	}
 
 	if mp.X == t.Pivot.X && mp.Y == t.Pivot.Y {
-		return append(ms, SE) // lock in move
+		// TODO: improve this.
+		switch {
+		case !t.Move(SE).isValid(b):
+			return append(ms, SE)
+		case !t.Move(SW).isValid(b):
+			return append(ms, SW)
+		case !t.Move(E).isValid(b):
+			return append(ms, E)
+		case !t.Move(W).isValid(b):
+			return append(ms, W)
+		}
+		// if !t.Move(SE).isValid(b) {
+		// 	return append(ms, SE) // lock in move
+		// }
 	}
 
 	return []Move{} // can't find a legal way

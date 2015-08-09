@@ -224,7 +224,6 @@ func TestFillBoard(t *testing.T) {
 }
 
 func TestMoveCell(t *testing.T) {
-	b := NewBoard(2, 2, []Cell{})
 	data := []struct {
 		c        Move
 		s        Cell
@@ -268,7 +267,7 @@ func TestMoveCell(t *testing.T) {
 	}
 
 	for _, d := range data {
-		if actual := d.s.Move(d.c, b); actual != d.expected {
+		if actual := d.s.Move(d.c); actual != d.expected {
 			t.Errorf("incorrect move: actual %v expected %v", actual, d.expected)
 		}
 	}
@@ -276,7 +275,6 @@ func TestMoveCell(t *testing.T) {
 }
 
 func TestMoveCellBiggerBoard(t *testing.T) {
-	b := NewBoard(2, 4, []Cell{})
 	data := []struct {
 		c        Move
 		s        Cell
@@ -310,7 +308,7 @@ func TestMoveCellBiggerBoard(t *testing.T) {
 	}
 
 	for _, d := range data {
-		if actual := d.s.Move(d.c, b); actual != d.expected {
+		if actual := d.s.Move(d.c); actual != d.expected {
 			t.Errorf("incorrect move: actual %v expected %v", actual, d.expected)
 		}
 	}
@@ -348,10 +346,9 @@ func TestBoardString(t *testing.T) {
 }
 
 func TestUnitMove(t *testing.T) {
-	b := NewBoard(10, 10, []Cell{})
 	// east
 	u := Unit{Members: []Cell{Cell{0, 0}, Cell{0, 1}, Cell{0, 2}}, Pivot: Cell{0, 0}}
-	actual := u.Move(E, b)
+	actual := u.Move(E)
 	expected := Unit{Members: []Cell{Cell{1, 0}, Cell{1, 1}, Cell{1, 2}}, Pivot: Cell{1, 0}}
 
 	if actual.Pivot != expected.Pivot {
@@ -365,7 +362,7 @@ func TestUnitMove(t *testing.T) {
 
 	// west
 	u = Unit{Members: []Cell{Cell{1, 0}, Cell{1, 1}, Cell{1, 2}}, Pivot: Cell{1, 0}}
-	actual = u.Move(W, b)
+	actual = u.Move(W)
 	expected = Unit{Members: []Cell{Cell{0, 0}, Cell{0, 1}, Cell{0, 2}}, Pivot: Cell{0, 0}}
 
 	if actual.Pivot != expected.Pivot {
@@ -379,7 +376,7 @@ func TestUnitMove(t *testing.T) {
 
 	// southeast
 	u = Unit{Members: []Cell{Cell{0, 0}, Cell{0, 1}, Cell{0, 2}}, Pivot: Cell{0, 0}}
-	actual = u.Move(SE, b)
+	actual = u.Move(SE)
 	expected = Unit{Members: []Cell{Cell{0, 1}, Cell{1, 2}, Cell{0, 3}}, Pivot: Cell{0, 1}}
 
 	if actual.Pivot != expected.Pivot {
@@ -393,7 +390,7 @@ func TestUnitMove(t *testing.T) {
 
 	// southwest
 	u = Unit{Members: []Cell{Cell{1, 0}, Cell{1, 1}, Cell{1, 2}}, Pivot: Cell{1, 0}}
-	actual = u.Move(SW, b)
+	actual = u.Move(SW)
 	expected = Unit{Members: []Cell{Cell{0, 1}, Cell{1, 2}, Cell{0, 3}}, Pivot: Cell{0, 1}}
 
 	if actual.Pivot != expected.Pivot {
