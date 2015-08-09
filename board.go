@@ -21,7 +21,7 @@ func logMsg(p Params, m string) {
 }
 
 func logScore(p Params, m string) {
-	if p.ShowScores {
+	if p.ShowScores || p.Debug {
 		fmt.Printf("%v\n", m)
 	}
 }
@@ -134,7 +134,7 @@ func main() {
 		b = NewBoard(params.Program.Height, params.Program.Width, params.Program.Filled)
 	}
 
-	logScore(params, fmt.Sprintf("============Total score for problem %v: %v============\n", params.Program.Id, totalScore/len(outs)))
+	logScore(params, fmt.Sprintf("============ Total score for problem %v: %v ============\n", params.Program.Id, totalScore/len(outs)))
 
 	o, err := json.Marshal(&outs)
 	if err != nil {
