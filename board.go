@@ -7,6 +7,12 @@ import "io/ioutil"
 import "math"
 import "encoding/json"
 
+func log(p Params, m string, b Board) {
+	if p.Debug {
+		fmt.Printf("%v:\n%v\n", m, b)
+	}
+}
+
 func main() {
 	params := ParseArgs()
 
@@ -20,6 +26,7 @@ func main() {
 		is := CalcUnitIndexes(rs, len(params.Program.Units))
 
 		for _, i := range is {
+			log(params, fmt.Sprintf("trying to place unit %v on board", i), b)
 			u := params.Program.Units[i]
 			s := b.StartLocation(u)
 			if !s.isValid(b) {
