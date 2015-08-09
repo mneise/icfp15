@@ -138,6 +138,33 @@ type Unit struct {
 }
 type Move int
 
+type Cube struct {
+	X int
+	Y int
+	Z int
+}
+
+func (c Cell) cube() Cube {
+	// http://www.redblobgames.com/grids/hexagons/
+	// # convert odd-r offset to cube
+	// x = col - (row - (row&1)) / 2
+	// z = row
+	// y = -x-z
+	x := c.X - (c.Y-(c.Y&1))/2
+	z := c.Y
+	y := -x - z
+
+	return Cube{X: x, Y: y, Z: z}
+}
+
+func (c Cube) cell() Cell {
+	// http://www.redblobgames.com/grids/hexagons/
+	// # convert cube to odd-r offset
+	// col = x + (z - (z&1)) / 2
+	// row = z
+	return Cell{X: c.X + (c.Z-(c.Z&1))/2, Y: c.Z}
+}
+
 func (m Move) String() string {
 	switch {
 	case m == E:
@@ -270,14 +297,32 @@ func (c Cell) Move(m Move, b Board) Cell {
 	return Cell{X: -1, Y: -1}
 }
 
-func (u Unit) MoveTo(cell Cell) Unit {
-	unit := Unit{Members: make([]Cell, len(u.Members)), Pivot: cell}
-	for i, member := range u.Members {
-		x := cell.X + (member.X - u.Pivot.X)
-		y := cell.Y + (member.Y - u.Pivot.Y)
-		unit.Members[i] = Cell{Y: y, X: x}
+func (u Unit) Move(m Move, b Board) (nu Unit) {
+	nu.Pivot = u.Pivot.Move(m, b)
+	for _, x := range u.Members {
+		nu.Members = append(nu.Members, x.Move(m, b))
 	}
-	return unit
+	return nu
+}
+
+func (u Unit) MoveTo(np Cell) Unit {
+	tu := Unit{Members: []Cell{}, Pivot: np}
+
+	xd := np.cube().X - u.Pivot.cube().X
+	yd := np.cube().Y - u.Pivot.cube().Y
+	zd := np.cube().Z - u.Pivot.cube().Z
+
+	for _, om := range u.Members {
+		oc := om.cube()
+		nm := Cube{
+			X: oc.X + xd,
+			Y: oc.Y + yd,
+			Z: oc.Z + zd,
+		}
+		tu.Members = append(tu.Members, nm.cell())
+	}
+
+	return tu
 }
 
 func TargetLocations(b Board, u Unit) []Unit {
@@ -398,7 +443,7 @@ func (b Board) MoveSequence(s Unit, t Unit) []Move {
 			// fmt.Printf("found move %v\n", m)
 			// try to move pivot / unit
 			tp := mp.Move(m, b)
-			tu := mu.MoveTo(tp)
+			tu := mu.Move(m, b)
 			if tp.isValid(b) && tu.isValid(b) { // found valid one,yay!
 				mu = tu
 				mp = tp

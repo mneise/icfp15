@@ -341,3 +341,121 @@ func TestBoardString(t *testing.T) {
 		}
 	}
 }
+
+func TestUnitMove(t *testing.T) {
+	b := NewBoard(10, 10, []Cell{})
+	// east
+	u := Unit{Members: []Cell{Cell{0, 0}, Cell{0, 1}, Cell{0, 2}}, Pivot: Cell{0, 0}}
+	actual := u.Move(E, b)
+	expected := Unit{Members: []Cell{Cell{1, 0}, Cell{1, 1}, Cell{1, 2}}, Pivot: Cell{1, 0}}
+
+	if actual.Pivot != expected.Pivot {
+		t.Errorf("wrong pivot: %v expected %v", actual.Pivot, expected.Pivot)
+	}
+	for mi, m := range expected.Members {
+		if m != actual.Members[mi] {
+			t.Errorf("wrong member: %v expected %v", actual.Members[mi], m)
+		}
+	}
+
+	// west
+	u = Unit{Members: []Cell{Cell{1, 0}, Cell{1, 1}, Cell{1, 2}}, Pivot: Cell{1, 0}}
+	actual = u.Move(W, b)
+	expected = Unit{Members: []Cell{Cell{0, 0}, Cell{0, 1}, Cell{0, 2}}, Pivot: Cell{0, 0}}
+
+	if actual.Pivot != expected.Pivot {
+		t.Errorf("wrong pivot: %v expected %v", actual.Pivot, expected.Pivot)
+	}
+	for mi, m := range expected.Members {
+		if m != actual.Members[mi] {
+			t.Errorf("wrong member: %v expected %v", actual.Members[mi], m)
+		}
+	}
+
+	// southeast
+	u = Unit{Members: []Cell{Cell{0, 0}, Cell{0, 1}, Cell{0, 2}}, Pivot: Cell{0, 0}}
+	actual = u.Move(SE, b)
+	expected = Unit{Members: []Cell{Cell{0, 1}, Cell{1, 2}, Cell{0, 3}}, Pivot: Cell{0, 1}}
+
+	if actual.Pivot != expected.Pivot {
+		t.Errorf("wrong pivot: %v expected %v", actual.Pivot, expected.Pivot)
+	}
+	for mi, m := range expected.Members {
+		if m != actual.Members[mi] {
+			t.Errorf("wrong member: %v expected %v", actual.Members[mi], m)
+		}
+	}
+
+	// southwest
+	u = Unit{Members: []Cell{Cell{1, 0}, Cell{1, 1}, Cell{1, 2}}, Pivot: Cell{1, 0}}
+	actual = u.Move(SW, b)
+	expected = Unit{Members: []Cell{Cell{0, 1}, Cell{1, 2}, Cell{0, 3}}, Pivot: Cell{0, 1}}
+
+	if actual.Pivot != expected.Pivot {
+		t.Errorf("wrong pivot: %v expected %v", actual.Pivot, expected.Pivot)
+	}
+	for mi, m := range expected.Members {
+		if m != actual.Members[mi] {
+			t.Errorf("wrong member: %v expected %v", actual.Members[mi], m)
+		}
+	}
+}
+
+func TestMoveTriplet(t *testing.T) {
+
+	// east
+	u := Unit{Members: []Cell{Cell{0, 0}, Cell{0, 1}, Cell{0, 2}}, Pivot: Cell{0, 0}}
+	actual := u.MoveTo(Cell{1, 0})
+	expected := Unit{Members: []Cell{Cell{1, 0}, Cell{1, 1}, Cell{1, 2}}, Pivot: Cell{1, 0}}
+
+	if actual.Pivot != expected.Pivot {
+		t.Errorf("wrong pivot: %v expected %v", actual.Pivot, expected.Pivot)
+	}
+	for mi, m := range expected.Members {
+		if m != actual.Members[mi] {
+			t.Errorf("wrong member: %v expected %v", actual.Members[mi], m)
+		}
+	}
+
+	// west
+	u = Unit{Members: []Cell{Cell{0, 0}, Cell{0, 1}, Cell{0, 2}}, Pivot: Cell{0, 0}}
+	actual = expected.MoveTo(Cell{0, 0})
+	expected = Unit{Members: []Cell{Cell{0, 0}, Cell{0, 1}, Cell{0, 2}}, Pivot: Cell{0, 0}}
+
+	if actual.Pivot != expected.Pivot {
+		t.Errorf("wrong pivot: %v expected %v", actual.Pivot, expected.Pivot)
+	}
+	for mi, m := range expected.Members {
+		if m != actual.Members[mi] {
+			t.Errorf("wrong member: %v expected %v", actual.Members[mi], m)
+		}
+	}
+
+	// southeast
+	u = Unit{Members: []Cell{Cell{0, 0}, Cell{0, 1}, Cell{0, 2}}, Pivot: Cell{0, 0}}
+	expected = Unit{Members: []Cell{Cell{0, 1}, Cell{1, 2}, Cell{0, 3}}, Pivot: Cell{0, 1}}
+	actual = u.MoveTo(Cell{0, 1})
+
+	if actual.Pivot != expected.Pivot {
+		t.Errorf("wrong pivot: %v expected %v", actual.Pivot, expected.Pivot)
+	}
+	for mi, m := range expected.Members {
+		if m != actual.Members[mi] {
+			t.Errorf("wrong member: %v expected %v", actual.Members[mi], m)
+		}
+	}
+
+	// southwest
+	u = Unit{Members: []Cell{Cell{1, 0}, Cell{1, 1}, Cell{1, 2}}, Pivot: Cell{1, 0}}
+	actual = expected.MoveTo(Cell{0, 1})
+	expected = Unit{Members: []Cell{Cell{0, 1}, Cell{1, 2}, Cell{0, 3}}, Pivot: Cell{0, 1}}
+
+	if actual.Pivot != expected.Pivot {
+		t.Errorf("wrong pivot: %v expected %v", actual.Pivot, expected.Pivot)
+	}
+	for mi, m := range expected.Members {
+		if m != actual.Members[mi] {
+			t.Errorf("wrong member: %v expected %v", actual.Members[mi], m)
+		}
+	}
+}
