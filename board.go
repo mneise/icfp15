@@ -103,7 +103,7 @@ func main() {
 			moveScores += points + lineBonus
 		}
 
-		fmt.Printf("Game score: %v\n", moveScores)
+		logMsg(params, fmt.Sprintf("Game score: %v\n", moveScores))
 		totalScore += moveScores
 
 		out := Output{
@@ -118,7 +118,7 @@ func main() {
 		b = NewBoard(params.Program.Height, params.Program.Width, params.Program.Filled)
 	}
 
-	fmt.Printf("Total score: %v\n", totalScore)
+	logMsg(params, fmt.Sprintf("Total score: %v\n", totalScore/len(outs)))
 
 	o, err := json.Marshal(&outs)
 	if err != nil {

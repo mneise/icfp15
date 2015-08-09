@@ -4,3 +4,5 @@ all :
 test : all
 	./play_icfp2015 -d=true -f p0.json
 
+submit : all
+	./submit.sh
