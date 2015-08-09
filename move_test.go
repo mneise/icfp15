@@ -248,7 +248,7 @@ func TestMoveCell(t *testing.T) {
 		{
 			c:        SW,
 			s:        Cell{0, 0},
-			expected: Cell{-1, -1},
+			expected: Cell{-1, 1},
 		},
 		{
 			c:        SW,
@@ -263,7 +263,7 @@ func TestMoveCell(t *testing.T) {
 		{
 			c:        SE,
 			s:        Cell{1, 1},
-			expected: Cell{-1, -1},
+			expected: Cell{2, 2},
 		},
 	}
 
@@ -295,7 +295,7 @@ func TestMoveCellBiggerBoard(t *testing.T) {
 		{
 			c:        SW,
 			s:        Cell{0, 0},
-			expected: Cell{-1, -1},
+			expected: Cell{-1, 1},
 		},
 		{
 			c:        SW,

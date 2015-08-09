@@ -278,25 +278,42 @@ func NewBoard(height int, width int, cells []Cell) Board {
 	return b
 }
 
-func (c Cell) Move(m Move, b Board) Cell {
+func (c Cell) Move(m Move, b Board) Cell { // TODO
+	// E: y-1 x+1 z
+	// SE: y-1 x z+1
+	// W: y+1 x-1 z
+	// SW: y x-1 z+1
+	q := c.cube()
+	nq := Cube{-1, -1, -1}
+
 	switch {
-	case m == W:
-		return Cell{X: c.X - 1, Y: c.Y}
 	case m == E:
-		return Cell{X: c.X + 1, Y: c.Y}
-
-	case m == SW && c.Y%2 == 1 && (c.X > 0 || c.X == 0):
-		return Cell{X: c.X, Y: c.Y + 1}
-	case m == SW && c.Y%2 == 0 && (c.X > 0):
-		return Cell{X: c.X - 1, Y: c.Y + 1}
-
-	case m == SE && c.Y%2 == 0 && (c.X < b.Width()-1 || c.X == b.Width()-1):
-		return Cell{X: c.X, Y: c.Y + 1}
-	case m == SE && c.Y%2 == 1 && c.X < b.Width()-1:
-		return Cell{X: c.X + 1, Y: c.Y + 1}
+		nq = Cube{
+			X: q.X + 1,
+			Y: q.Y - 1,
+			Z: q.Z,
+		}
+	case m == SE:
+		nq = Cube{
+			X: q.X,
+			Y: q.Y - 1,
+			Z: q.Z + 1,
+		}
+	case m == W:
+		nq = Cube{
+			X: q.X - 1,
+			Y: q.Y + 1,
+			Z: q.Z,
+		}
+	case m == SW:
+		nq = Cube{
+			X: q.X - 1,
+			Y: q.Y,
+			Z: q.Z + 1,
+		}
 	}
 
-	return Cell{X: -1, Y: -1}
+	return nq.cell()
 }
 
 func (u Unit) Move(m Move, b Board) (nu Unit) {
