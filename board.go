@@ -14,7 +14,6 @@ func main() {
 	outs := make([]Output, len(params.Program.SourceSeeds))
 	b := NewBoard(params.Program.Height, params.Program.Width, params.Program.Filled)
 
-	// is := CalcUnitIndexes
 	for i, seed := range params.Program.SourceSeeds {
 
 		rs := CalcRandom(seed, params.Program.SourceLength)
