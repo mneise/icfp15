@@ -459,3 +459,49 @@ func TestMoveTriplet(t *testing.T) {
 		}
 	}
 }
+
+func TestPathFindingFailure(t *testing.T) {
+
+	b := NewBoard(
+		10,
+		10,
+		[]Cell{
+			Cell{0, 6},
+			Cell{5, 6},
+			Cell{9, 6},
+			Cell{0, 7},
+			Cell{2, 7},
+			Cell{3, 7},
+			Cell{7, 7},
+			Cell{8, 7},
+			Cell{1, 8},
+			Cell{2, 8},
+			Cell{3, 8},
+			Cell{5, 8},
+			Cell{6, 8},
+			Cell{8, 8},
+			Cell{9, 8},
+			Cell{1, 9},
+			Cell{2, 9},
+			Cell{3, 9},
+			Cell{4, 9},
+			Cell{6, 9},
+			Cell{7, 9},
+			Cell{8, 9},
+			Cell{9, 9},
+		},
+	)
+
+	sl := Unit{Members: []Cell{Cell{4, 0}, Cell{4, 2}}, Pivot: Cell{4, 1}}
+	tl := Unit{Members: []Cell{Cell{7, 6}, Cell{7, 8}}, Pivot: Cell{7, 7}}
+
+	ms := b.MoveSequence(sl, tl)
+
+	expected := []Move{E, E, E, SE, W, SE, SE, W, SE, SW, SE, SE}
+
+	for i, em := range expected {
+		if ms[i] != em {
+			t.Errorf("did not find proper path. got %v expected %v", ms, expected)
+		}
+	}
+}

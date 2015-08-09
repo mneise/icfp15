@@ -501,6 +501,7 @@ func (b Board) MoveSequence(s Unit, t Unit) []Move {
 		for _, m := range moves(xd, yd) {
 			if len(ms) > 0 &&
 				((m == W && ms[len(ms)-1] == E) || (m == E && ms[len(ms)-1] == W)) {
+				// fmt.Printf("not going backwards ms %v m %v\n", ms, m)
 				continue
 			}
 
@@ -508,13 +509,15 @@ func (b Board) MoveSequence(s Unit, t Unit) []Move {
 			// try to move pivot / unit
 			tp := mp.Move(m)
 			tu := mu.Move(m)
-			if tp.isValid(b) && tu.isValid(b) { // found valid one,yay!
+			if tu.isValid(b) { // found valid one,yay!
 				mu = tu
 				mp = tp
 				xd, yd = direction(mp, t.Pivot)
 				ms = append(ms, m)
 				break
 			}
+			// fmt.Printf("move %v is invalid. cannot move %v to %v, trying next.\n", m, mu, tu)
+			// fmt.Printf("move %v is invalid. cannot move %v to %v, trying next.\n", m, mu, tu)
 		}
 
 		if before == len(ms) {
