@@ -554,8 +554,15 @@ func TestRotateMove(t *testing.T) {
 	if !actual.eq(expected) {
 		t.Errorf("incorrect 3rd move, got\n%v expected\n%v", actual, expected)
 	}
+
 	//  ⬡ ⬡ ⬡ ⬡
 	//   ⬢ · ⬢ ⬡
 	//  ⬡ ⬡ ⬡ ⬡
 
+	actual = expected.Move(RCC)
+	expected = Unit{Members: []Cell{Cell{2, 0}, Cell{1, 2}}, Pivot: Cell{1, 1}}
+
+	if !actual.eq(expected) {
+		t.Errorf("incorrect 3rd move, got\n%v expected\n%v", actual, expected)
+	}
 }

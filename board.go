@@ -392,8 +392,8 @@ func (c Cell) Move(m Move, p Cell) Cell { // TODO
 		yd := pq.Y - q.Y
 		zd := pq.Z - q.Z
 
-		fmt.Printf("\napply %v to %v ", m, c)
-		fmt.Printf("xd %2d yd %2d zd %2d\n", xd, yd, zd)
+		// fmt.Printf("\napply %v to %v ", m, c)
+		// fmt.Printf("xd %2d yd %2d zd %2d\n", xd, yd, zd)
 
 		nq = Cube{
 			X: q.X - yd,
@@ -401,7 +401,31 @@ func (c Cell) Move(m Move, p Cell) Cell { // TODO
 			Z: q.Z - xd,
 		}
 
-		fmt.Printf("moved c%v q%v to q%v or c%v\n", c, c.cube(), nq, nq.cell())
+		// fmt.Printf("moved c%v q%v to q%v or c%v\n", c, c.cube(), nq, nq.cell())
+	case m == RCC:
+		pq := p.cube()
+
+		// right
+		//     [ x,  y,  z]
+		//     [-z, -x, -y]
+		// left
+		// [ x,  y,  z]
+		// [-y, -z, -x]
+
+		xd := pq.X - q.X
+		yd := pq.Y - q.Y
+		zd := pq.Z - q.Z
+
+		// fmt.Printf("\napply %v to %v ", m, c)
+		// fmt.Printf("xd %2d yd %2d zd %2d\n", xd, yd, zd)
+
+		nq = Cube{
+			X: q.X - zd,
+			Y: q.Y - xd,
+			Z: q.Z - yd,
+		}
+
+		// fmt.Printf("moved c%v q%v to q%v or c%v\n", c, c.cube(), nq, nq.cell())
 	}
 
 	return nq.cell()
