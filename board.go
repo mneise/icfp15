@@ -201,6 +201,24 @@ func (c Cell) cube() Cube {
 	return Cube{X: x, Y: y, Z: z}
 }
 
+func (u Unit) eq(o Unit) bool {
+	if u.Pivot != o.Pivot {
+		return false
+	}
+
+	if len(u.Members) != len(o.Members) {
+		return false
+	}
+
+	for i, m := range u.Members {
+		if o.Members[i] != m {
+			return false
+		}
+	}
+
+	return true
+}
+
 func (c Cube) cell() Cell {
 	// http://www.redblobgames.com/grids/hexagons/
 	// # convert cube to odd-r offset
@@ -219,6 +237,10 @@ func (m Move) String() string {
 		return "W"
 	case m == SW:
 		return "SW"
+	case m == RC:
+		return "RC"
+	case m == RCC:
+		return "RCC"
 	}
 	return "?"
 }
@@ -323,7 +345,7 @@ func NewBoard(height int, width int, cells []Cell) Board {
 	return b
 }
 
-func (c Cell) Move(m Move) Cell { // TODO
+func (c Cell) Move(m Move, p Cell) Cell { // TODO
 	// E: y-1 x+1 z
 	// SE: y-1 x z+1
 	// W: y+1 x-1 z
@@ -356,15 +378,45 @@ func (c Cell) Move(m Move) Cell { // TODO
 			Y: q.Y,
 			Z: q.Z + 1,
 		}
+	case m == RC:
+		pq := p.cube()
+
+		// right
+		//     [ x,  y,  z]
+		//     [-z, -x, -y]
+		// left
+		// [ x,  y,  z]
+		// [-y, -z, -x]
+
+		xd := pq.X - q.X
+		yd := pq.Y - q.Y
+		zd := pq.Z - q.Z
+
+		fmt.Printf("\napply %v to %v ", m, c)
+		fmt.Printf("xd %2d yd %2d zd %2d\n", xd, yd, zd)
+
+		nq = Cube{
+			X: q.X - yd,
+			Y: q.Y - zd,
+			Z: q.Z - xd,
+		}
+
+		fmt.Printf("moved c%v q%v to q%v or c%v\n", c, c.cube(), nq, nq.cell())
 	}
 
 	return nq.cell()
 }
 
 func (u Unit) Move(m Move) (nu Unit) {
-	nu.Pivot = u.Pivot.Move(m)
+
+	if m != RC && m != RCC {
+		nu.Pivot = u.Pivot.Move(m, u.Pivot)
+	} else {
+		nu.Pivot = u.Pivot
+	}
+
 	for _, x := range u.Members {
-		nu.Members = append(nu.Members, x.Move(m))
+		nu.Members = append(nu.Members, x.Move(m, u.Pivot))
 	}
 	return nu
 }
@@ -515,11 +567,11 @@ func (b Board) MoveSequence(s Unit, t Unit) []Move {
 
 			// fmt.Printf("found move %v\n", m)
 			// try to move pivot / unit
-			tp := mp.Move(m)
+			// tp := mp.Move(m, )
 			tu := mu.Move(m)
 			if tu.isValid(b) { // found valid one,yay!
 				mu = tu
-				mp = tp
+				mp = tu.Pivot
 				xd, yd = direction(mp, t.Pivot)
 				ms = append(ms, m)
 				break
