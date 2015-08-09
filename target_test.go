@@ -308,3 +308,61 @@ func TestClearFullRows(t *testing.T) {
 			expected, actual)
 	}
 }
+
+func TestInsertPowerPhrases(t *testing.T) {
+	s := "bap"
+	expected := "ei!"
+	actual := InsertPowerPhrases(s)
+
+	if expected != actual {
+		t.Errorf("Expected solution to be: %v, but was: %v",
+			expected, actual)
+	}
+
+	s = "bapbap"
+	expected = "ei!ei!"
+	actual = InsertPowerPhrases(s)
+
+	if expected != actual {
+		t.Errorf("Expected solution to be: %v, but was: %v",
+			expected, actual)
+	}
+
+	s = "bapaaplaapbap"
+	expected = "ei!ia! ia!ei!"
+	actual = InsertPowerPhrases(s)
+
+	if expected != actual {
+		t.Errorf("Expected solution to be: %v, but was: %v",
+			expected, actual)
+	}
+}
+
+func TestCalcPowerScore(t *testing.T) {
+	s := "ei!"
+	expected := 306
+	actual := CalcPowerScore(s)
+
+	if expected != actual {
+		t.Errorf("Expected solution to be: %v, but was: %v",
+			expected, actual)
+	}
+
+	s = "ei!ei!"
+	expected = 312
+	actual = CalcPowerScore(s)
+
+	if expected != actual {
+		t.Errorf("Expected solution to be: %v, but was: %v",
+			expected, actual)
+	}
+
+	s = "ei!ia! ia!ei!"
+	expected = 626
+	actual = CalcPowerScore(s)
+
+	if expected != actual {
+		t.Errorf("Expected solution to be: %v, but was: %v",
+			expected, actual)
+	}
+}

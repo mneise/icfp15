@@ -6,6 +6,7 @@ import "fmt"
 import "io/ioutil"
 import "math"
 import "encoding/json"
+import "strings"
 
 func logBoard(p Params, m string, b Board) {
 	if p.Debug {
@@ -108,8 +109,12 @@ func main() {
 			moveScores += points + lineBonus
 		}
 
-		logMsg(params, fmt.Sprintf("Game score: %v\n", moveScores))
-		totalScore += moveScores
+		solution = InsertPowerPhrases(solution)
+		powerScore := CalcPowerScore(solution)
+		gameScore := moveScores + powerScore
+		logMsg(params, fmt.Sprintf("%v (move score) + %v (power score) = %v\n",
+			moveScores, powerScore, gameScore))
+		totalScore += gameScore
 
 		out := Output{
 			ProblemId: params.Program.Id,
@@ -293,6 +298,52 @@ var commands = map[Move][]string{
 	SW:  []string{"a", "g", "h", "i", "j", "4"},
 	RC:  []string{"d", "q", "r", "v", "z", "1"},
 	RCC: []string{"k", "s", "t", "u", "w", "x"},
+}
+
+// there are eighteen phrases of power
+var powerPhrases = map[string]string{
+	// RC SW SE E SE RCC RC E RC
+	"dalblkdbd": "vancouver",
+	// E RCC SW SW SE RCC SW
+	"bkaalka": "yuggoth",
+	// SW SW W SE SW SW E => a a p l a a p
+	"aaplaap": "ia! ia!",
+	// RC W SE E E SW => d p l b b a
+	"dplbba": "r'lyeh",
+	// E SW W => b a p
+	"bap": "ei!",
+}
+
+func InsertPowerPhrases(s string) string {
+	ns := s
+	for k, v := range powerPhrases {
+		ns = strings.Replace(ns, k, v, -1)
+	}
+	return ns
+}
+
+func CalcPowerScore(s string) int {
+	ps := 0
+
+	for _, v := range powerPhrases {
+		if len(v) > len(s) {
+			continue
+		}
+
+		count := 0
+		for i := len(v); i <= len(s); i++ {
+			if v == s[i-len(v):i] {
+				count++
+			}
+		}
+
+		ps += 2 * len(v) * count
+		if count > 0 {
+			ps += 300
+		}
+	}
+
+	return ps
 }
 
 func MovesToCommands(ms []Move) []string {
