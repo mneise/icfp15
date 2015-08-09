@@ -64,6 +64,32 @@ func (b Board) FillCells(cells []Cell) Board {
 	return nb
 }
 
+func (b Board) String() (s string) {
+
+	for ri, r := range b {
+		if ri%2 == 1 {
+			s += " "
+		}
+
+		for ci, c := range r {
+			if c {
+				s += "⬢"
+			} else {
+				s += "⬡"
+			}
+			if ci < len(r)-1 {
+				s += " "
+			}
+		}
+
+		if ri < len(b)-1 {
+			s += "\n"
+		}
+	}
+
+	return s
+}
+
 type Board [][]bool
 type Cell struct {
 	X int

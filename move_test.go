@@ -311,3 +311,33 @@ func TestMoveCellBiggerBoard(t *testing.T) {
 	}
 
 }
+
+func TestBoardString(t *testing.T) {
+	data := []struct {
+		board    Board
+		expected string
+	}{
+		{
+			board: NewBoard(2, 2, []Cell{}),
+			expected: `⬡ ⬡
+ ⬡ ⬡`,
+		},
+		{
+			board: NewBoard(2, 2, []Cell{Cell{0, 0}, Cell{1, 1}}),
+			expected: `⬢ ⬡
+ ⬡ ⬢`,
+		},
+		{
+			board: NewBoard(3, 3, []Cell{Cell{0, 0}, Cell{1, 1}}),
+			expected: `⬢ ⬡ ⬡
+ ⬡ ⬢ ⬡
+⬡ ⬡ ⬡`,
+		},
+	}
+
+	for _, d := range data {
+		if actual := d.board.String(); d.expected != actual {
+			t.Errorf("weird string for board, actual\n%v\nexpected:\n%v\n", actual, d.expected)
+		}
+	}
+}
