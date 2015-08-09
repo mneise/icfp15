@@ -307,12 +307,12 @@ func (u Unit) Move(m Move, b Board) (nu Unit) {
 	return nu
 }
 
-func (u Unit) MoveTo(np Cell) Unit {
-	tu := Unit{Members: []Cell{}, Pivot: np}
+func (u Unit) MoveTo(new Cell, old Cell) Unit {
+	tu := Unit{}
 
-	xd := np.cube().X - u.Pivot.cube().X
-	yd := np.cube().Y - u.Pivot.cube().Y
-	zd := np.cube().Z - u.Pivot.cube().Z
+	xd := new.cube().X - old.cube().X
+	yd := new.cube().Y - old.cube().Y
+	zd := new.cube().Z - old.cube().Z
 
 	for _, om := range u.Members {
 		oc := om.cube()
@@ -324,6 +324,14 @@ func (u Unit) MoveTo(np Cell) Unit {
 		tu.Members = append(tu.Members, nm.cell())
 	}
 
+	op := u.Pivot.cube()
+	np := Cube{
+		X: op.X + xd,
+		Y: op.Y + yd,
+		Z: op.Z + zd,
+	}
+	tu.Pivot = np.cell()
+
 	return tu
 }
 
@@ -331,7 +339,7 @@ func TargetLocations(b Board, u Unit) []Unit {
 	ts := []Unit{}
 	for y := range b {
 		for x := range b[y] {
-			t := u.MoveTo(Cell{x, y})
+			t := u.MoveTo(Cell{x, y}, u.Pivot)
 			if t.isValid(b) {
 				ts = append([]Unit{t}, ts...)
 			}
@@ -471,11 +479,24 @@ func (c Cell) ShiftX(offset int) Cell {
 	return Cell{X: c.X + offset, Y: c.Y}
 }
 
-func (b Board) StartLocation(u Unit) Unit {
-	offset := (b.Width() - u.Width()) / 2
-	newPivot := u.Pivot.ShiftX(offset)
+func (c Cell) ShiftY(offset int) Cell {
+	return Cell{X: c.X, Y: c.Y + offset}
+}
 
-	return u.MoveTo(newPivot)
+func (b Board) StartLocation(u Unit) Unit {
+	// move to right
+	minXCell := u.MinXCell()
+	offset := (b.Width() - u.Width()) / 2
+	nc := minXCell.ShiftX(0 - minXCell.X + offset)
+	u = u.MoveTo(nc, minXCell)
+
+	// move up
+	minYCell := u.MinYCell()
+	offset = 0 - minYCell.Y
+	nc = minYCell.ShiftY(offset)
+	u = u.MoveTo(nc, minYCell)
+
+	return u
 }
 
 func (u Unit) Width() int {
@@ -492,6 +513,34 @@ func (u Unit) Width() int {
 	}
 
 	return 1 + maxX - minX
+}
+
+func (u Unit) MinYCell() Cell {
+	minY := math.MaxInt32
+	c := Cell{}
+
+	for _, member := range u.Members {
+		if minY > member.Y {
+			minY = member.Y
+			c = member
+		}
+	}
+
+	return c
+}
+
+func (u Unit) MinXCell() Cell {
+	minX := math.MaxInt32
+	c := Cell{}
+
+	for _, member := range u.Members {
+		if minX > member.X {
+			minX = member.X
+			c = member
+		}
+	}
+
+	return c
 }
 
 func (u Unit) Height() int {

@@ -132,7 +132,7 @@ func TestFindTargetLowerRight(t *testing.T) {
 func TestUnitRelativeToCell(t *testing.T) {
 	unit := Unit{Members: []Cell{Cell{0, 0}}, Pivot: Cell{0, 0}}
 	cell := Cell{1, 1}
-	actual := unit.MoveTo(cell)
+	actual := unit.MoveTo(cell, unit.Pivot)
 	expected := Unit{Members: []Cell{Cell{1, 1}}, Pivot: Cell{1, 1}}
 
 	if !equalsUnit(actual, expected) {
@@ -141,7 +141,7 @@ func TestUnitRelativeToCell(t *testing.T) {
 
 	unit = Unit{Members: []Cell{Cell{0, 0}, Cell{2, 0}}, Pivot: Cell{1, 0}}
 	cell = Cell{0, 3}
-	actual = unit.MoveTo(cell)
+	actual = unit.MoveTo(cell, unit.Pivot)
 	expected = Unit{Members: []Cell{Cell{-1, 3}, Cell{1, 3}}, Pivot: Cell{0, 3}}
 
 	if !equalsUnit(actual, expected) {

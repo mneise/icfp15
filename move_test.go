@@ -410,7 +410,7 @@ func TestMoveTriplet(t *testing.T) {
 
 	// east
 	u := Unit{Members: []Cell{Cell{0, 0}, Cell{0, 1}, Cell{0, 2}}, Pivot: Cell{0, 0}}
-	actual := u.MoveTo(Cell{1, 0})
+	actual := u.MoveTo(Cell{1, 0}, u.Pivot)
 	expected := Unit{Members: []Cell{Cell{1, 0}, Cell{1, 1}, Cell{1, 2}}, Pivot: Cell{1, 0}}
 
 	if actual.Pivot != expected.Pivot {
@@ -423,8 +423,7 @@ func TestMoveTriplet(t *testing.T) {
 	}
 
 	// west
-	u = Unit{Members: []Cell{Cell{0, 0}, Cell{0, 1}, Cell{0, 2}}, Pivot: Cell{0, 0}}
-	actual = expected.MoveTo(Cell{0, 0})
+	actual = expected.MoveTo(Cell{0, 0}, expected.Pivot)
 	expected = Unit{Members: []Cell{Cell{0, 0}, Cell{0, 1}, Cell{0, 2}}, Pivot: Cell{0, 0}}
 
 	if actual.Pivot != expected.Pivot {
@@ -439,7 +438,7 @@ func TestMoveTriplet(t *testing.T) {
 	// southeast
 	u = Unit{Members: []Cell{Cell{0, 0}, Cell{0, 1}, Cell{0, 2}}, Pivot: Cell{0, 0}}
 	expected = Unit{Members: []Cell{Cell{0, 1}, Cell{1, 2}, Cell{0, 3}}, Pivot: Cell{0, 1}}
-	actual = u.MoveTo(Cell{0, 1})
+	actual = u.MoveTo(Cell{0, 1}, u.Pivot)
 
 	if actual.Pivot != expected.Pivot {
 		t.Errorf("wrong pivot: %v expected %v", actual.Pivot, expected.Pivot)
@@ -451,8 +450,7 @@ func TestMoveTriplet(t *testing.T) {
 	}
 
 	// southwest
-	u = Unit{Members: []Cell{Cell{1, 0}, Cell{1, 1}, Cell{1, 2}}, Pivot: Cell{1, 0}}
-	actual = expected.MoveTo(Cell{0, 1})
+	actual = expected.MoveTo(Cell{0, 1}, expected.Pivot)
 	expected = Unit{Members: []Cell{Cell{0, 1}, Cell{1, 2}, Cell{0, 3}}, Pivot: Cell{0, 1}}
 
 	if actual.Pivot != expected.Pivot {
