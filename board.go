@@ -41,7 +41,7 @@ func main() {
 			}
 
 			logMsg(params, "======================================================")
-			logBoard(params, fmt.Sprintf("trying to place unit %v on board", i), b.FillCells(s.Members))
+			logBoard(params, fmt.Sprintf("trying to place unit %v on board", u), b.FillCells(s.Members))
 
 			ts := TargetLocations(b, u)
 			m := []Move{}
