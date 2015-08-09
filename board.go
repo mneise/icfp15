@@ -208,10 +208,21 @@ func (u Unit) eq(o Unit) bool {
 		return false
 	}
 
-	for i, m := range u.Members {
-		if o.Members[i] != m {
+	for _, m := range u.Members {
+		foundM := false
+		for _, om := range o.Members {
+			if om == m {
+				foundM = true
+				break
+			}
+		}
+
+		if !foundM {
 			return false
 		}
+		// if o.Members[i] != m {
+		// 	return false
+		// }
 	}
 
 	return true
@@ -553,15 +564,15 @@ func moves(xd, yd int) []Move {
 
 	switch {
 	case xd < 0 && yd > 0: // left down
-		return []Move{W, SW, SE, E}
+		return []Move{W, SW, SE, E, RC, RCC}
 	case xd == 0 && yd > 0: // down
-		return []Move{SE, SW, E, W}
+		return []Move{SE, SW, E, W, RC, RCC}
 	case xd > 0 && yd > 0: // right down
-		return []Move{E, SE, SW, W}
+		return []Move{E, SE, SW, W, RC, RCC}
 	case xd < 0 && yd == 0: // left
-		return []Move{W}
+		return []Move{W, RC, RCC}
 	case xd > 0 && yd == 0: // right
-		return []Move{E}
+		return []Move{E, RC, RCC}
 	case xd == 0 && yd == 0: // done
 	case yd < 0: // cant move up
 	}
@@ -574,21 +585,32 @@ func (b Board) MoveSequence(s Unit, t Unit) []Move {
 	mp := s.Pivot
 	xd, yd := direction(s.Pivot, t.Pivot)
 	ms := []Move{}
+	ls := []Unit{s}
 
 	for true {
 		before := len(ms)
+	findNextMove:
 		for _, m := range moves(xd, yd) {
+			tu := mu.Move(m)
+
 			if len(ms) > 0 &&
 				((m == W && ms[len(ms)-1] == E) || (m == E && ms[len(ms)-1] == W)) {
-				continue
+				continue findNextMove
 			}
 
-			tu := mu.Move(m)
+			for _, pl := range ls {
+				if tu.eq(pl) {
+					// fmt.Printf("been here, skipping %v already got %v\n", m, ms)
+					continue findNextMove
+				}
+			}
+
 			if tu.isValid(b) { // found valid one,yay!
 				mu = tu
 				mp = tu.Pivot
 				xd, yd = direction(mp, t.Pivot)
 				ms = append(ms, m)
+				ls = append(ls, mu)
 				break
 			}
 		}
