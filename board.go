@@ -35,16 +35,14 @@ func main() {
 
 			u := params.Program.Units[i]
 			s := b.StartLocation(u)
-<<<<<<< HEAD
 			if !s.isValid(b) {
+				logMsg(params, fmt.Sprintf("couldn't place unit! GAME OVER BABY"))
 				break
 			}
-=======
 
 			logMsg(params, "======================================================")
 			logBoard(params, fmt.Sprintf("trying to place unit %v on board", i), b.FillCells(s.Members))
 
->>>>>>> adds debugging print steps
 			ts := TargetLocations(b, u)
 			m := []Move{}
 			t := Unit{}
