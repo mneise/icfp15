@@ -10,3 +10,5 @@ submit : all
 board : all
 	./logboards.sh
 
+testall: all
+	./testall.sh

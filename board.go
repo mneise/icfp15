@@ -20,6 +20,12 @@ func logMsg(p Params, m string) {
 	}
 }
 
+func logScore(p Params, m string) {
+	if p.ShowScores {
+		fmt.Printf("%v\n", m)
+	}
+}
+
 func main() {
 	params := ParseArgs()
 
@@ -112,7 +118,7 @@ func main() {
 		solution = InsertPowerPhrases(solution)
 		powerScore := CalcPowerScore(solution)
 		gameScore := moveScores + powerScore
-		logMsg(params, fmt.Sprintf("%v (move score) + %v (power score) = %v\n",
+		logScore(params, fmt.Sprintf("%v (move score) + %v (power score) = %v\n",
 			moveScores, powerScore, gameScore))
 		totalScore += gameScore
 
@@ -128,13 +134,15 @@ func main() {
 		b = NewBoard(params.Program.Height, params.Program.Width, params.Program.Filled)
 	}
 
-	logMsg(params, fmt.Sprintf("Total score: %v\n", totalScore/len(outs)))
+	logScore(params, fmt.Sprintf("============Total score for problem %v: %v============\n", params.Program.Id, totalScore/len(outs)))
 
 	o, err := json.Marshal(&outs)
 	if err != nil {
 		panic(fmt.Sprintf("can't marshal to json: %v", err))
 	}
-	fmt.Println(string(o))
+	if !params.ShowScores {
+		fmt.Println(string(o))
+	}
 }
 
 func (b Board) FillCells(cells []Cell) Board {
@@ -254,6 +262,7 @@ type Params struct {
 	PhraseOfPower        string
 	Debug                bool
 	LogBoard             bool
+	ShowScores           bool
 }
 
 func ParseArgs() Params {
@@ -264,6 +273,7 @@ func ParseArgs() Params {
 	var p = flag.String("p", "Ei!", "phrase of power")
 	var d = flag.Bool("d", false, "print debug output")
 	var b = flag.Bool("b", false, "print start board only")
+	var s = flag.Bool("s", false, "show scores")
 
 	flag.Parse()
 
@@ -279,6 +289,7 @@ func ParseArgs() Params {
 		PhraseOfPower:        *p,
 		Debug:                *d,
 		LogBoard:             *b,
+		ShowScores:           *s,
 	}
 }
 
