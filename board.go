@@ -1,6 +1,7 @@
 package main
 
 import "flag"
+import "time"
 import "fmt"
 import "io/ioutil"
 import "math"
@@ -47,7 +48,7 @@ func main() {
 		out := Output{
 			ProblemId: params.Program.Id,
 			Seed:      seed,
-			Tag:       "hippo rules.",
+			Tag:       fmt.Sprintf("hippo rules @ %v", time.Now()),
 			Solution:  solution,
 		}
 
@@ -73,6 +74,32 @@ func (b Board) FillCells(cells []Cell) Board {
 	}
 
 	return nb
+}
+
+func (b Board) String() (s string) {
+
+	for ri, r := range b {
+		if ri%2 == 1 {
+			s += " "
+		}
+
+		for ci, c := range r {
+			if c {
+				s += "⬢"
+			} else {
+				s += "⬡"
+			}
+			if ci < len(r)-1 {
+				s += " "
+			}
+		}
+
+		if ri < len(b)-1 {
+			s += "\n"
+		}
+	}
+
+	return s
 }
 
 type Board [][]bool
