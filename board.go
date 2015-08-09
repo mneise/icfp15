@@ -1,6 +1,7 @@
 package main
 
 import "flag"
+import "time"
 import "fmt"
 import "io/ioutil"
 import "math"
@@ -35,7 +36,7 @@ func main() {
 		out := Output{
 			ProblemId: params.Program.Id,
 			Seed:      seed,
-			Tag:       "hippo rules.",
+			Tag:       fmt.Sprintf("hippo rules @ %v", time.Now()),
 			Solution:  solution,
 		}
 
