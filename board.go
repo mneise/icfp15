@@ -27,6 +27,11 @@ func main() {
 	outs := make([]Output, len(params.Program.SourceSeeds))
 	totalScore := 0
 
+	if params.LogBoard {
+		logBoard(params, fmt.Sprintf("Board for problem: %v", params.Program.Id), b)
+		return
+	}
+
 	for i, seed := range params.Program.SourceSeeds {
 
 		moveScores := 0
@@ -243,6 +248,7 @@ type Params struct {
 	Cores                int
 	PhraseOfPower        string
 	Debug                bool
+	LogBoard             bool
 }
 
 func ParseArgs() Params {
@@ -252,6 +258,7 @@ func ParseArgs() Params {
 	var c = flag.Int("c", 0, "number of cores available")
 	var p = flag.String("p", "Ei!", "phrase of power")
 	var d = flag.Bool("d", false, "print debug output")
+	var b = flag.Bool("b", false, "print start board only")
 
 	flag.Parse()
 
@@ -266,6 +273,7 @@ func ParseArgs() Params {
 		Cores:                *c,
 		PhraseOfPower:        *p,
 		Debug:                *d,
+		LogBoard:             *b,
 	}
 }
 

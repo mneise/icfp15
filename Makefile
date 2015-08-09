@@ -6,3 +6,7 @@ test : all
 
 submit : all
 	./submit.sh
+
+board : all
+	./logboards.sh
+
