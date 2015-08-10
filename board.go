@@ -314,13 +314,13 @@ var commands = map[Move][]string{
 // there are eighteen phrases of power
 var powerPhrases = map[string]string{
 	// RC SW SE E SE RCC RC E RC
-	"dalblkdbd": "vancouver",
+	// "dalblkdbd": "vancouver",
 	// E RCC SW SW SE RCC SW
-	"bkaalka": "yuggoth",
+	// "bkaalka": "yuggoth",
 	// SW SW W SE SW SW E => a a p l a a p
 	"aaplaap": "ia! ia!",
 	// RC W SE E E SW => d p l b b a
-	"dplbba": "r'lyeh",
+	// "dplbba": "r'lyeh",
 	// E SW W => b a p
 	"bap": "ei!",
 }
@@ -461,13 +461,21 @@ func (u Unit) MoveTo(new Cell, old Cell) Unit {
 
 func TargetLocations(b Board, u Unit) []Unit {
 	ts := []Unit{}
+	bu := make([][]Unit, b.Height())
+
 	for y := range b {
 		for x := range b[y] {
 			t := u.MoveTo(Cell{x, y}, u.Pivot)
 			if t.isValid(b) {
-				ts = append([]Unit{t}, ts...)
+				nb := b.FillCells(t.Members)
+				c := nb.CountFullRows()
+				bu[c] = append([]Unit{t}, bu[c]...)
 			}
 		}
+	}
+
+	for i := len(bu) - 1; i >= 0; i-- {
+		ts = append(ts, bu[i]...)
 	}
 
 	return ts
@@ -518,6 +526,16 @@ func (b Board) IsRowFull(r int) bool {
 	return true
 }
 
+func (b Board) CountFullRows() int {
+	count := 0
+	for r := range b {
+		if b.IsRowFull(r) {
+			count += 1
+		}
+	}
+	return count
+}
+
 func direction(s, t Cell) (xd, yd int) {
 	yd = t.Y - s.Y
 	// ys = yd
@@ -545,7 +563,7 @@ func moves(xd, yd int) []Move {
 	case xd == 0 && yd > 0: // down
 		return []Move{SE, SW, E, W}
 	case xd > 0 && yd > 0: // right down
-		return []Move{E, SE, SW, W}
+		return []Move{SE, E, SW, W}
 	case xd < 0 && yd == 0: // left
 		return []Move{W}
 	case xd > 0 && yd == 0: // right
