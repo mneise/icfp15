@@ -461,7 +461,11 @@ func (u Unit) MoveTo(new Cell, old Cell) Unit {
 
 func TargetLocations(b Board, u Unit) []Unit {
 	ts := []Unit{}
-	bu := make([][]Unit, b.Height())
+	bu := make([][]Unit, b.Height()+1)
+
+	for i := 0; i <= b.Height(); i++ {
+		bu[i] = []Unit{}
+	}
 
 	for y := range b {
 		for x := range b[y] {
@@ -563,7 +567,7 @@ func moves(xd, yd int) []Move {
 	case xd == 0 && yd > 0: // down
 		return []Move{SE, SW, E, W}
 	case xd > 0 && yd > 0: // right down
-		return []Move{SE, E, SW, W}
+		return []Move{E, SE, SW, W}
 	case xd < 0 && yd == 0: // left
 		return []Move{W}
 	case xd > 0 && yd == 0: // right

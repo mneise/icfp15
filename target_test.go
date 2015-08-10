@@ -38,9 +38,9 @@ func TestFindTargetLowerRight(t *testing.T) {
 	unit := Unit{[]Cell{Cell{0, 0}}, Cell{0, 0}}
 	actual := TargetLocations(board, unit)
 	expected := []Unit{
+		Unit{[]Cell{Cell{0, 0}}, Cell{0, 0}},
 		Unit{[]Cell{Cell{1, 1}}, Cell{1, 1}},
-		Unit{[]Cell{Cell{0, 1}}, Cell{0, 1}},
-		Unit{[]Cell{Cell{0, 0}}, Cell{0, 0}}}
+		Unit{[]Cell{Cell{0, 1}}, Cell{0, 1}}}
 
 	if len(expected) != len(actual) {
 		t.Errorf("Failed to find target, got unit: %v expected %v", actual, expected)
